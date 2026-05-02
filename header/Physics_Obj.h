@@ -1,0 +1,158 @@
+#pragma once
+#include "raylib.h"
+#include "cmath"
+
+class Physics_Obj
+{
+protected:
+    Vector2 position;
+    Vector2 velocity;
+    Vector2 acceleration;
+
+    // each physics object is made up of 10 points
+    static const int num_points = 10;
+    Vector2 wireframe_points[num_points];
+
+    // terminal point of the angle
+    Vector2 angle_point;
+    Vector2 arrow_angle[2];
+
+    float angle; // TODO: currently is in radians
+    float radius;
+    bool is_stable;
+
+    void transform_wireframe(Vector2 new_position);
+    void rotate_wireframe(float rot_angle);
+    void update_angle_arrow();
+
+public:
+    Physics_Obj(Vector2 position, float radius, float angle, Vector2 velocity = {0, 0}, Vector2 acceleration = {0, 0});
+
+    void set_position(Vector2 new_position);
+    void increment_position(Vector2 inc_amount);
+
+    void set_angle(float rot_angle);
+    void increment_rotation(float inc_amount);
+
+    virtual void draw() const = 0;
+    virtual ~Physics_Obj() = default;
+};
+
+void Physics_Obj::update_angle_arrow()
+{
+    int arrow_len = 10;
+
+    // arrow of the angle terminal point
+    // Upper line of the arrow
+    float diff_x = arrow_len * cos(PI / 4);
+    float diff_y = -1 * arrow_len * sin(PI / 4); // *-1 because I want to make the rotation go anti-clock wise
+
+    {
+        // for the upper arrow go left and then go up
+        float x = angle_point.x - diff_x;
+        float y = angle_point.y - diff_y;
+
+        arrow_angle[0].x = x;
+        arrow_angle[0].y = y;
+    }
+
+    {
+        // for the lower arrow go left and then go down
+        float x = angle_point.x - diff_x;
+        float y = angle_point.y + diff_y;
+
+        arrow_angle[1].x = x;
+        arrow_angle[1].y = y;
+    }
+
+    
+}
+// update all the wireframe points along with the angle terminal point
+void Physics_Obj::transform_wireframe(Vector2 new_position)
+{
+
+    // how much difference in x,y direction from the previous pos and the new pos
+    int diff_x = new_position.x - position.x;
+    int diff_y = new_position.y - position.y;
+
+    for (int i = 0; i < num_points; i++)
+    {
+        wireframe_points[i].x += diff_x;
+        wireframe_points[i].y += diff_y;
+    }
+
+    angle_point.x += diff_x;
+    angle_point.y += diff_y;
+
+    arrow_angle[0].x += diff_x;
+    arrow_angle[0].y += diff_y;
+    arrow_angle[1].x += diff_x;
+    arrow_angle[1].y += diff_y;
+}
+
+Physics_Obj::Physics_Obj(Vector2 position, float radius, float angle, Vector2 velocity, Vector2 acceleration) : position{position}, radius{radius}, velocity{velocity}, acceleration{acceleration}, is_stable{false}, angle{angle}
+{
+    rotate_wireframe(angle);
+}
+
+// set a new center for the phy object directly
+void Physics_Obj::set_position(Vector2 new_position)
+{
+    transform_wireframe(new_position);
+    this->position = new_position;
+}
+
+// increment the current position by the given x,y amount
+void Physics_Obj::increment_position(Vector2 inc_amount)
+{
+
+    Vector2 new_position = {position.x + inc_amount.x, position.y + inc_amount.y};
+    set_position(new_position);
+}
+
+// directly set the angle of the phy obj
+// TODO: angle in radians
+void Physics_Obj::set_angle(float rot_angle)
+{
+    rotate_wireframe(rot_angle);
+}
+
+// rotate the wireframe points by the given rotation
+void Physics_Obj::rotate_wireframe(float rot_angle)
+{
+
+    // Given the center and the radius compute 10 wireframe points on the circle
+    float partition_angle = 2.0 * PI / (float(num_points));
+    for (int i = 0; i < num_points; i++)
+    {
+        // essentially implementing the formula (2pi/n)*i+theta = partition_angle*i+theta where theta is the rotation angle
+        int x = radius * cosf(partition_angle * i + rot_angle);
+        int y = -1 * radius * sinf(partition_angle * i + rot_angle); // *-1 because I want to make the rotation go anti-clock wise
+
+        // now compute the coordinate transformation
+        x += position.x;
+        y += position.y;
+
+        wireframe_points[i].x = x;
+        wireframe_points[i].y = y;
+    }
+
+    // workout the terminal point of the angle for the current rotation
+    int x = radius * cosf(rot_angle);
+    int y = -1 * radius * sinf(rot_angle);
+    x += position.x;
+    y += position.y;
+
+    angle_point.x = x;
+    angle_point.y = y;
+
+    update_angle_arrow();
+
+    this->angle = rot_angle;
+}
+
+// rotate the phy obj by adding to the current rotation
+void Physics_Obj::increment_rotation(float inc_amount)
+{
+    rotate_wireframe(this->angle + inc_amount);
+}
