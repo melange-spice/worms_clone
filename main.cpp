@@ -24,7 +24,7 @@ int main()
     SetTargetFPS(60); // Set our game to run at 60 frames-per-second
     //--------------------------------------------------------------------------------------
     // Main game loop
-    
+
     while (!WindowShouldClose()) // Detect window close button or ESC key
     {
 
@@ -61,18 +61,18 @@ int main()
             }
         }
 
-          if (IsKeyDown(KEY_R))
+        if (IsKeyDown(KEY_R))
         {
             for (int i = 0; i < total_objs; i++)
             {
-                objects_list[i]->increment_rotation(-0.1);
+                objects_list[i]->increment_rotation(+0.1);
             }
         }
         else if (IsKeyDown(KEY_Q))
         {
             for (int i = 0; i < total_objs; i++)
             {
-                objects_list[i]->increment_rotation(+0.1);
+                objects_list[i]->increment_rotation(-0.1);
             }
         }
 
@@ -82,9 +82,8 @@ int main()
             // std::cout<<"Enter rotation angle in degree: ";
             // std::cin>>rot;
 
-            Dummy *created_dummy = new Dummy(GetMousePosition(), 30,0.0);
+            Dummy *created_dummy = new Dummy(GetMousePosition(), 30, 0.0);
             std::cout << "Created dummy object\n";
-            
 
             if (total_objs + 1 > max_size)
             {
@@ -94,7 +93,8 @@ int main()
                 }
 
                 // make a new list greater that is double the previous size
-                Physics_Obj **obj_list_new = new Physics_Obj *[max_size * 2]{nullptr};
+                Physics_Obj **obj_list_new = new Physics_Obj *[max_size * 2]
+                { nullptr };
 
                 // copy the old list
                 for (int i = 0; i < total_objs; i++)
@@ -126,7 +126,6 @@ int main()
             }
         }
 
-
         // dummy.update_position({float(x),float(y)});
         //  Draw
         //----------------------------------------------------------------------------------
@@ -147,7 +146,7 @@ int main()
         // std::cout << "x,y: " << x << "," << y << std::endl;
         // std::cout << GetFPS() << std::endl;
         Vector2 mouse_pos = GetMousePosition();
-        std::cout<<"Mouse position: "<<mouse_pos.x<<", "<<mouse_pos.y<<std::endl;
+        std::cout << "Mouse position: " << mouse_pos.x << ", " << mouse_pos.y << std::endl;
     }
 
     if (objects_list != nullptr)
