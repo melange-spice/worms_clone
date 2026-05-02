@@ -1,21 +1,21 @@
 #pragma once
-#include "Physics_Obj.h"
+#include "phy_obj.h"
 #include "raylib.h"
 
-class Dummy : public Physics_Obj
+class dummy : public phy_obj
 {
 
 public:
-    Dummy(Vector2 position, float radius, float angle);
+    dummy(Vector2 position, float radius, float angle);
 
     void draw() const;
 };
 
-Dummy::Dummy(Vector2 position, float radius, float angle) : Physics_Obj(position, radius, angle)
+dummy::dummy(Vector2 position, float radius, float angle) : phy_obj(position, radius, angle)
 {
 }
 
-void Dummy::draw() const
+void dummy::draw() const
 {
 
     // draw the circle

@@ -4,9 +4,9 @@
 #include "raymath.h"
 #include <iostream>
 
-class Physics_Obj
+class phy_obj
 {
-protected:
+public:
     Vector2 position;
     Vector2 velocity;
     Vector2 acceleration;
@@ -26,7 +26,7 @@ protected:
     void rotate_angle(float rot_angle);
 
 public:
-    Physics_Obj(Vector2 position, float radius, float angle, Vector2 velocity = {0, 0}, Vector2 acceleration = {0, 0});
+    phy_obj(Vector2 position, float radius, float angle, Vector2 velocity = {0, 0}, Vector2 acceleration = {0, 0});
 
     void set_position(Vector2 new_position);
     void increment_position(Vector2 inc_amount);
@@ -35,11 +35,11 @@ public:
     void increment_rotation(float inc_amount);
 
     virtual void draw() const = 0;
-    virtual ~Physics_Obj() = default;
+    virtual ~phy_obj() = default;
 };
 
 // rotates the terminal point of the angle plus the points of the angle head
-void Physics_Obj::rotate_angle(float rot_angle)
+void phy_obj::rotate_angle(float rot_angle)
 {
     // workout the terminal point of the angle for the current rotation
     int x = radius * cosf(rot_angle);
@@ -54,7 +54,7 @@ void Physics_Obj::rotate_angle(float rot_angle)
 }
 
 // update all the wireframe points along with the angle terminal point
-void Physics_Obj::transform_wireframe(Vector2 new_position)
+void phy_obj::transform_wireframe(Vector2 new_position)
 {
 
     // how much difference in x,y direction from the previous pos and the new pos
@@ -71,7 +71,8 @@ void Physics_Obj::transform_wireframe(Vector2 new_position)
     angle_point.y += diff_y;
 }
 
-Physics_Obj::Physics_Obj(Vector2 position, float radius, float angle, Vector2 velocity, Vector2 acceleration) : position{position}, radius{radius}, velocity{velocity}, acceleration{acceleration}, is_stable{false}, angle{angle}
+phy_obj::phy_obj(Vector2 position, float radius, float angle, Vector2 velocity, Vector2 acceleration) : position{position}, radius{radius},
+    velocity{velocity}, acceleration{acceleration}, is_stable{false}, angle{angle}
 {
     // initialize the angle terminal point
     // essentially equal to wire_frame_point[0]
@@ -81,14 +82,14 @@ Physics_Obj::Physics_Obj(Vector2 position, float radius, float angle, Vector2 ve
 }
 
 // set a new center for the phy object directly
-void Physics_Obj::set_position(Vector2 new_position)
+void phy_obj::set_position(Vector2 new_position)
 {
     transform_wireframe(new_position);
     this->position = new_position;
 }
 
 // increment the current position by the given x,y amount
-void Physics_Obj::increment_position(Vector2 inc_amount)
+void phy_obj::increment_position(Vector2 inc_amount)
 {
 
     Vector2 new_position = {position.x + inc_amount.x, position.y + inc_amount.y};
@@ -96,13 +97,13 @@ void Physics_Obj::increment_position(Vector2 inc_amount)
 }
 
 // directly set the angle of the phy obj
-void Physics_Obj::set_angle(float rot_angle)
+void phy_obj::set_angle(float rot_angle)
 {
     rotate_wireframe(rot_angle);
 }
 
 // rotate the wireframe points by the given rotation
-void Physics_Obj::rotate_wireframe(float rot_angle)
+void phy_obj::rotate_wireframe(float rot_angle)
 {
     // Given the center and the radius compute 10 wireframe points on the circle
     float partition_angle = 2.0 * PI / (float(num_points));
@@ -126,7 +127,7 @@ void Physics_Obj::rotate_wireframe(float rot_angle)
 }
 
 // rotate the phy obj by adding to the current rotation
-void Physics_Obj::increment_rotation(float inc_amount)
+void phy_obj::increment_rotation(float inc_amount)
 {
     rotate_wireframe(this->angle + inc_amount);
 }

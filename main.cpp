@@ -1,6 +1,6 @@
 #include "header/raylib.h"
-#include "header/Map.h"
-#include "header/Dummy.h"
+#include "header/map.h"
+#include "header/dummy.h"
 #include <iostream>
 
 int main()
@@ -14,10 +14,11 @@ int main()
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Worms shitty clone");
     // WARNING NOTE: Textures MUST be loaded after Window initialization (OpenGL context is required)
 
-    Map map(20, SCREEN_WIDTH, SCREEN_HEIGHT);
-    map.load_textures("assets\\ground_20.png", "assets\\sky_20.png");
+    map mapp(10, SCREEN_WIDTH, SCREEN_HEIGHT);
+    //map.load_textures("assets\\ground_20.png", "assets\\sky_20.png");
+    mapp.load_textures("assets\\ground.png", "assets\\sky.png");
 
-    Physics_Obj **objects_list = nullptr;
+    phy_obj **objects_list = nullptr;
     int total_objs = 0;
     int max_size = 0;
 
@@ -27,10 +28,11 @@ int main()
 
     while (!WindowShouldClose()) // Detect window close button or ESC key
     {
-
+        
         //  Updates
         //----------------------------------------------------------------------------------
 
+        //-------------------------------------input checks start
         if (IsKeyDown(KEY_D))
         {
             for (int i = 0; i < total_objs; i++)
@@ -82,7 +84,7 @@ int main()
             // std::cout<<"Enter rotation angle in degree: ";
             // std::cin>>rot;
 
-            Dummy *created_dummy = new Dummy(GetMousePosition(), 30, 0.0);
+            dummy *created_dummy = new dummy(GetMousePosition(), 30, 0.0);
             std::cout << "Created dummy object\n";
 
             if (total_objs + 1 > max_size)
@@ -93,7 +95,7 @@ int main()
                 }
 
                 // make a new list greater that is double the previous size
-                Physics_Obj **obj_list_new = new Physics_Obj *[max_size * 2]
+                phy_obj **obj_list_new = new phy_obj *[max_size * 2]
                 { nullptr };
 
                 // copy the old list
@@ -125,26 +127,46 @@ int main()
                 std::cout << "Only appended the list new index = " << total_objs << std::endl;
             }
         }
+        //-------------------------------------input check end---------------
 
-        // dummy.update_position({float(x),float(y)});
+        //---------------------------apply physics start---------------------------
+
+        for (int i = 0; i < total_objs; i++)
+        {
+            //apply forces to acceleration
+            objects_list[i]->acceleration.y += 2.0f;
+
+            objects_list[i]->velocity.x += objects_list[i]->acceleration.x *GetFrameTime();
+            objects_list[i]->velocity.y += objects_list[i]->acceleration.y *GetFrameTime();
+
+            objects_list[i]->position.x += objects_list[i]->velocity.x *GetFrameTime();
+            objects_list[i]->position.y += objects_list[i]->velocity.y *GetFrameTime();
+
+        }
+        
+
+        //---------------------------apply physics end---------------------------
+    
         //  Draw
         //----------------------------------------------------------------------------------
         BeginDrawing();
         ClearBackground(RAYWHITE);
 
-        map.draw();
+        mapp.draw();
 
-        DrawText("h", 500, 500, 1, BLACK);
+    
 
         for (int i = 0; i < total_objs; i++)
         {
             objects_list[i]->draw();
         }
 
+        //DrawPolyLinesEx({504,503},6,30,2,4,BLACK);
+        
+
         EndDrawing();
 
-        // std::cout << "x,y: " << x << "," << y << std::endl;
-        // std::cout << GetFPS() << std::endl;
+        //std::cout << GetFPS() << std::endl;
         Vector2 mouse_pos = GetMousePosition();
         std::cout << "Mouse position: " << mouse_pos.x << ", " << mouse_pos.y << std::endl;
     }
