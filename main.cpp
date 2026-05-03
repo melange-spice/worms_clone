@@ -15,7 +15,7 @@ int main()
     // WARNING NOTE: Textures MUST be loaded after Window initialization (OpenGL context is required)
 
     map mapp(10, SCREEN_WIDTH, SCREEN_HEIGHT);
-    //map.load_textures("assets\\ground_20.png", "assets\\sky_20.png");
+    // map.load_textures("assets\\ground_20.png", "assets\\sky_20.png");
     mapp.load_textures("assets\\ground.png", "assets\\sky.png");
 
     phy_obj **objects_list = nullptr;
@@ -28,55 +28,55 @@ int main()
 
     while (!WindowShouldClose()) // Detect window close button or ESC key
     {
-        
+
         //  Updates
         //----------------------------------------------------------------------------------
 
         //-------------------------------------input checks start
-        if (IsKeyDown(KEY_D))
-        {
-            for (int i = 0; i < total_objs; i++)
-            {
-                objects_list[i]->increment_position({5, 0});
-            }
-        }
-        else if (IsKeyDown(KEY_A))
-        {
-            for (int i = 0; i < total_objs; i++)
-            {
-                objects_list[i]->increment_position({-5, 0});
-            }
-        }
+        // if (IsKeyDown(KEY_D))
+        // {
+        //     for (int i = 0; i < total_objs; i++)
+        //     {
+        //         objects_list[i]->increment_position({5, 0});
+        //     }
+        // }
+        // else if (IsKeyDown(KEY_A))
+        // {
+        //     for (int i = 0; i < total_objs; i++)
+        //     {
+        //         objects_list[i]->increment_position({-5, 0});
+        //     }
+        // }
 
-        if (IsKeyDown(KEY_W))
-        {
-            for (int i = 0; i < total_objs; i++)
-            {
-                objects_list[i]->increment_position({0, -5});
-            }
-        }
-        else if (IsKeyDown(KEY_S))
-        {
-            for (int i = 0; i < total_objs; i++)
-            {
-                objects_list[i]->increment_position({0, +5});
-            }
-        }
+        // if (IsKeyDown(KEY_W))
+        // {
+        //     for (int i = 0; i < total_objs; i++)
+        //     {
+        //         objects_list[i]->increment_position({0, -5});
+        //     }
+        // }
+        // else if (IsKeyDown(KEY_S))
+        // {
+        //     for (int i = 0; i < total_objs; i++)
+        //     {
+        //         objects_list[i]->increment_position({0, +5});
+        //     }
+        // }
 
-        if (IsKeyDown(KEY_R))
-        {
-            for (int i = 0; i < total_objs; i++)
-            {
-                objects_list[i]->increment_rotation(+0.1);
-            }
-        }
-        else if (IsKeyDown(KEY_Q))
-        {
-            for (int i = 0; i < total_objs; i++)
-            {
-                objects_list[i]->increment_rotation(-0.1);
-            }
-        }
+        // if (IsKeyDown(KEY_R))
+        // {
+        //     for (int i = 0; i < total_objs; i++)
+        //     {
+        //         objects_list[i]->increment_rotation(+0.1);
+        //     }
+        // }
+        // else if (IsKeyDown(KEY_Q))
+        // {
+        //     for (int i = 0; i < total_objs; i++)
+        //     {
+        //         objects_list[i]->increment_rotation(-0.1);
+        //     }
+        // }
 
         if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
         {
@@ -133,20 +133,22 @@ int main()
 
         for (int i = 0; i < total_objs; i++)
         {
-            //apply forces to acceleration
-            objects_list[i]->acceleration.y += 2.0f;
+            if (IsKeyDown(KEY_SPACE))
+            {
 
-            objects_list[i]->velocity.x += objects_list[i]->acceleration.x *GetFrameTime();
-            objects_list[i]->velocity.y += objects_list[i]->acceleration.y *GetFrameTime();
+                // apply forces to acceleration
+                objects_list[i]->acceleration.y += 2.0f;
 
-            objects_list[i]->position.x += objects_list[i]->velocity.x *GetFrameTime();
-            objects_list[i]->position.y += objects_list[i]->velocity.y *GetFrameTime();
+                objects_list[i]->velocity.x += objects_list[i]->acceleration.x * GetFrameTime();
+                objects_list[i]->velocity.y += objects_list[i]->acceleration.y * GetFrameTime();
 
+                objects_list[i]->position.x += objects_list[i]->velocity.x * GetFrameTime();
+                objects_list[i]->position.y += objects_list[i]->velocity.y * GetFrameTime();
+            }
         }
-        
 
         //---------------------------apply physics end---------------------------
-    
+
         //  Draw
         //----------------------------------------------------------------------------------
         BeginDrawing();
@@ -154,21 +156,18 @@ int main()
 
         mapp.draw();
 
-    
-
         for (int i = 0; i < total_objs; i++)
         {
             objects_list[i]->draw();
         }
 
-        //DrawPolyLinesEx({504,503},6,30,2,4,BLACK);
-        
+        // DrawPolyLinesEx({504,503},6,30,2,4,BLACK);
 
         EndDrawing();
 
-        //std::cout << GetFPS() << std::endl;
-        Vector2 mouse_pos = GetMousePosition();
-        std::cout << "Mouse position: " << mouse_pos.x << ", " << mouse_pos.y << std::endl;
+        std::cout << GetFPS() << std::endl;
+        // Vector2 mouse_pos = GetMousePosition();
+        // std::cout << "Mouse position: " << mouse_pos.x << ", " << mouse_pos.y << std::endl;
     }
 
     if (objects_list != nullptr)
