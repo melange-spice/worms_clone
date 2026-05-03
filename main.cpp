@@ -131,19 +131,26 @@ int main()
 
         //---------------------------apply physics start---------------------------
 
-        for (int i = 0; i < total_objs; i++)
+        //10 physics iterations per frame 
+        for (int j = 0; j < 10; j++)
         {
-            if (IsKeyDown(KEY_SPACE))
+            for (int i = 0; i < total_objs; i++)
             {
-
-                // apply forces to acceleration
-                objects_list[i]->acceleration.y += 2.0f;
+                // gravity
+                objects_list[i]->acceleration.y += 10.0f;
 
                 objects_list[i]->velocity.x += objects_list[i]->acceleration.x * GetFrameTime();
                 objects_list[i]->velocity.y += objects_list[i]->acceleration.y * GetFrameTime();
 
+                // std::cout << "acc.y: " << objects_list[i]->acceleration.y << std::endl;
+                // std::cout << "vel.y: " << objects_list[i]->velocity.y << std::endl;
+
                 objects_list[i]->position.x += objects_list[i]->velocity.x * GetFrameTime();
                 objects_list[i]->position.y += objects_list[i]->velocity.y * GetFrameTime();
+
+                // reset gravity so it becomes constant
+                objects_list[i]->acceleration = {0, 0};
+                objects_list[i]->is_stable = false;
             }
         }
 
@@ -160,8 +167,6 @@ int main()
         {
             objects_list[i]->draw();
         }
-
-        // DrawPolyLinesEx({504,503},6,30,2,4,BLACK);
 
         EndDrawing();
 
