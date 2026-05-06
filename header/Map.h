@@ -3,7 +3,7 @@
 
 class map
 {
-private:
+public:
     int tile_width;
 
     //if map width = 10 then 100x60 map 

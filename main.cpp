@@ -25,7 +25,6 @@ int main()
     SetTargetFPS(60); // Set our game to run at 60 frames-per-second
     //--------------------------------------------------------------------------------------
     // Main game loop
-
     while (!WindowShouldClose()) // Detect window close button or ESC key
     {
 
@@ -131,7 +130,7 @@ int main()
 
         //---------------------------apply physics start---------------------------
 
-        //10 physics iterations per frame 
+        // 10 physics iterations per frame
         for (int j = 0; j < 10; j++)
         {
             for (int i = 0; i < total_objs; i++)
@@ -151,6 +150,65 @@ int main()
                 // reset gravity so it becomes constant
                 objects_list[i]->acceleration = {0, 0};
                 objects_list[i]->is_stable = false;
+
+                float v_angle = atan2f(objects_list[i]->velocity.y, objects_list[i]->velocity.x);
+                float sc_start_angle = v_angle + (PI / 2.0);
+                float sc_end_angle = v_angle - (PI / 2.0);
+
+                Vector2 response{0, 0};
+
+                // sc_start_angle += 10 degree each iteration
+                // so 180/10 = 18 points on the semi circle?
+                // TODO: VERIFY
+                // loop will run approx 18 times?
+
+                bool col = false;
+                for (; sc_start_angle <= sc_end_angle; sc_start_angle += 0.17453)
+                {
+                    Vector2 collision_point{objects_list[i]->radius * cosf(sc_start_angle), objects_list[i]->radius * sinf(sc_start_angle)};
+                    // translation necessary cause currently collision_point are centered about (0,0)
+                    collision_point.x += objects_list[i]->position.x;
+                    collision_point.y += objects_list[i]->position.y;
+
+                    // now we can directly check with the map
+                    // check if collision with between the collision_point and the map has occurred
+
+                    // TODO: map out of bounds check !!!
+                    int x = collision_point.x;
+                    int y = collision_point.y;
+                    // if there is something other than 'S' in the map then yes collision has occured
+                    if (mapp.map_grid[x][y] != 'S')
+                    {
+                        response.x += collision_point.x;
+                        response.y += collision_point.y;
+
+                        col = true;
+                    }
+                }
+
+                if (col == true)
+                {
+                    // invert the response vector
+                    response.x *= -1;
+                    response.y *= -1;
+
+                    // calculate normal collision plane
+                    float r_angle = atan2f(response.y, response.x);
+                    float normal_angle = r_angle + (PI / 2.0);
+
+                    objects_list[i]->is_stable = true;
+
+                    // Calculate magnitudes of response and velocity vectors
+                    float fMagVelocity = sqrtf(objects_list[i]->velocity.x * objects_list[i]->velocity.x + objects_list[i]->velocity.y * objects_list[i]->velocity.y);
+                    float fMagResponse = sqrtf(response.x * response.x + response.y * response.y);
+
+                    // Calculate reflection vector of objects velocity vector, using response vector as normal
+                    float dot = objects_list[i]->velocity.x * (response.x / fMagResponse) + objects_list[i]->velocity.y * (response.y / fMagResponse);
+
+                    // Use friction coefficient to dampen response (approximating energy loss)
+                    objects_list[i]->velocity.x = (-2.0f * dot * (response.x / fMagResponse) + objects_list[i]->velocity.x);
+                    objects_list[i]->velocity.y = (-2.0f * dot * (response.y / fMagResponse) + objects_list[i]->velocity.y);
+                }
             }
         }
 
