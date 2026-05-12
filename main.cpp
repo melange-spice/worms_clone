@@ -1,10 +1,12 @@
 #include "header/raylib.h"
 #include "header/map.h"
 #include "header/dummy.h"
+#include "header/debris.h"
 #include <iostream>
 #include <chrono>
 #include <fstream>
 #include <vector>
+#include "header/myLL.h"
 
 int main()
 {
@@ -21,6 +23,10 @@ int main()
     map mapp(10, SCREEN_WIDTH, SCREEN_HEIGHT, "map_input.txt");
     // map.load_textures("assets\\ground_20.png", "assets\\sky_20.png");
     mapp.load_textures("assets\\ground.png", "assets\\sky.png");
+
+
+    //TODO: from here 
+    //myLL<phy_obj*> objects_list;
 
     phy_obj **objects_list = nullptr;
     int total_objs = 0;
@@ -97,9 +103,10 @@ int main()
         if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
         {
             dummy *created_dummy = new dummy(GetMousePosition(), 30, 0.0);
+            debris *created_debris = new debris(GetMousePosition(), 20, 0.0);
             std::cout << "Created dummy object\n";
 
-            if (total_objs + 1 > max_size)
+            if (total_objs + 2 > max_size)
             {
                 if (max_size == 0)
                 {
@@ -116,6 +123,8 @@ int main()
                     obj_list_new[i] = objects_list[i];
                 }
                 obj_list_new[total_objs] = created_dummy;
+                total_objs++;
+                obj_list_new[total_objs] = created_debris;
 
                 // delete the dynamic pointers of old list
                 if (objects_list != nullptr)
@@ -135,6 +144,9 @@ int main()
                 // no need to increment the list directly append the list
                 objects_list[total_objs] = created_dummy;
                 total_objs++;
+                objects_list[total_objs] = created_debris;
+
+                total_objs++;
 
                 std::cout << "Only appended the list new index = " << total_objs << std::endl;
             }
@@ -148,7 +160,7 @@ int main()
 
         // std::chrono::time_point start = std::chrono::high_resolution_clock::now();
 
-        std::vector<Vector2> cp;
+        //std::vector<Vector2> cp;
         //  10 physics iterations per frame
         for (int j = 0; j < 10; j++)
         {
@@ -193,7 +205,7 @@ int main()
                     collision_point.x += potential_position.x;
                     collision_point.y += potential_position.y;
 
-                    cp.push_back(collision_point);
+                    //cp.push_back(collision_point);
 
                     // now we can directly check with the map
                     // check if collision with between the collision_point and the map has occurred
@@ -336,12 +348,12 @@ int main()
         {
             objects_list[i]->draw();
 
-            for (int j = 0; j < cp.size(); j++)
-            {
-                // draw the velocity vector
+            // for (int j = 0; j < cp.size(); j++)
+            // {
+            //     // draw the velocity vector
 
-                DrawLineEx(objects_list[i]->position, cp[j], 2, BLUE);
-            }
+            //     DrawLineEx(objects_list[i]->position, cp[j], 2, BLUE);
+            // }
         }
 
         EndDrawing();

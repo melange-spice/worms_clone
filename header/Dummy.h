@@ -1,24 +1,19 @@
 #pragma once
 #include "phy_obj.h"
 #include "raylib.h"
-#include "wire_frame.h"
+#include <cmath>
+
 
 class dummy : public phy_obj
 {
-    // // each dummy object is made up of 10 points
-    // static const int num_points = 10;
-
-    // Vector2 wireframe_points[num_points];
     Vector2 angle_point; // terminal point of the angle
 
-    // void transform_wireframe(Vector2 new_position);
     void rotate_wireframe(float rot_angle);
     void rotate_angle(float rot_angle);
 
 public:
     dummy(Vector2 position, float radius, float angle);
 
-    // void set_position(Vector2 new_position);
     void draw();
 };
 
@@ -69,5 +64,4 @@ void dummy::draw()
     Vector2 translated_velocity{velocity.x+position.x,velocity.y+position.y};
     DrawLineEx(position, translated_velocity, 2,ORANGE);
 
-    
 }

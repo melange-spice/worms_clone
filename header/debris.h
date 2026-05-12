@@ -1,9 +1,10 @@
 #pragma once
 #include "phy_obj.h"
 #include "raylib.h"
-#include "wire_frame.h"
+#include <cmath>
 
-class dummy : public phy_obj
+
+class debris : public phy_obj
 {
     Vector2 angle_point; // terminal point of the angle
 
@@ -12,14 +13,14 @@ class dummy : public phy_obj
     void rotate_angle(float rot_angle);
 
 public:
-    dummy(Vector2 position, float radius, float angle);
+    debris(Vector2 position, float radius, float angle);
 
     // void set_position(Vector2 new_position);
     void draw();
 };
 
 // rotate the wireframe points by the given rotation
-void dummy::rotate_wireframe(float rot_angle)
+void debris::rotate_wireframe(float rot_angle)
 {
     rotate_angle(rot_angle);
 
@@ -27,7 +28,7 @@ void dummy::rotate_wireframe(float rot_angle)
 }
 
 // rotates the terminal point of the angle plus the points of the angle head
-void dummy::rotate_angle(float rot_angle)
+void debris::rotate_angle(float rot_angle)
 {
     // workout the terminal point of the angle for the current rotation
     int x = radius * cosf(rot_angle);
@@ -41,7 +42,7 @@ void dummy::rotate_angle(float rot_angle)
     angle_point.y = y;
 }
 
-dummy::dummy(Vector2 position, float radius, float angle) : phy_obj(position, radius, angle)
+debris::debris(Vector2 position, float radius, float angle) : phy_obj(position, radius, angle)
 {
     // initialize the angle terminal point
     // essentially equal to wire_frame_point[0]
@@ -50,13 +51,16 @@ dummy::dummy(Vector2 position, float radius, float angle) : phy_obj(position, ra
     rotate_wireframe(angle);
 }
 
-void dummy::draw()
+void debris::draw()
 {
     float angle = atan2f(velocity.y, velocity.x);
     rotate_angle(angle);
 
+    
+    Rectangle r{position.x,position.y,10,10};
+    DrawRectangleLinesEx(r,2,PINK);
+
     // draw the circle
-    DrawRectangleLinesEx()
     DrawCircleLinesV(position, radius, BLACK);
 
     // draw the arrow
