@@ -5,10 +5,6 @@
 
 class dummy : public phy_obj
 {
-    // // each dummy object is made up of 10 points
-    // static const int num_points = 10;
-
-    // Vector2 wireframe_points[num_points];
     Vector2 angle_point; // terminal point of the angle
 
     // void transform_wireframe(Vector2 new_position);
@@ -60,6 +56,7 @@ void dummy::draw()
     rotate_angle(angle);
 
     // draw the circle
+    DrawRectangleLinesEx()
     DrawCircleLinesV(position, radius, BLACK);
 
     // draw the arrow

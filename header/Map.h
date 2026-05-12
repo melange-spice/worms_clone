@@ -84,11 +84,7 @@ void map::draw(bool with_lines) const
             int x = map_x * tile_width;
             int y = map_y * tile_width;
 
-            if (with_lines)//map grid
-            {
-                DrawRectangleLines(x, y, tile_width, tile_width, BLACK);
-            }
-
+        
             if (map_grid[map_y][map_x] == 'G')
             {
                 DrawTexture(ground, x, y, WHITE);
@@ -96,6 +92,11 @@ void map::draw(bool with_lines) const
             else if (map_grid[map_y][map_x] == 'S')
             {
                 DrawTexture(sky, x, y, WHITE);
+            }
+
+            if (with_lines)//map grid
+            {
+                DrawRectangleLines(x, y, tile_width, tile_width, BLACK);
             }
         }
     }
