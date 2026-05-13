@@ -56,19 +56,38 @@ void debris::draw()
     float angle = atan2f(velocity.y, velocity.x);
     rotate_angle(angle);
 
+    //the center of the debri's phy_obj would be meeting point of the diagonals
+    //of the rectangle of debris
+    Rectangle rec;
+
+    //top left corner
+    rec.x = radius*cosf((3*PI)/4)+position.x;
+    rec.y = radius*sinf((3*PI)/4)+position.y;
     
-    Rectangle r{position.x,position.y,10,10};
-    DrawRectangleLinesEx(r,2,PINK);
+    //width of the rectangle = top right corner x - top left corner x
+    rec.width = (radius*cosf(PI/4)+position.x)-rec.x;
+
+    //height of the rectangle = top left corner y - bottom left corner y
+    rec.height = rec.y-(radius*sinf((5*PI)/4)+position.y);
+
+    //without this the rectangle was being drawn from the bottom left corner
+    //cause of the inverted origin? 
+    rec.y -= rec.height;
+
+    //draw the rec
+    DrawRectangleRec(rec,DARKGREEN);
+    //DrawRectangleLinesEx(rec,2,PINK);
+    //DrawRectangleLinesEx(rec,2,PINK);
 
     // draw the circle
-    DrawCircleLinesV(position, radius, BLACK);
+    //DrawCircleLinesV(position, radius, BLACK);
 
     // draw the arrow
-    DrawLineV(position, angle_point, RED);
+    //DrawLineV(position, angle_point, RED);
 
     //draw the velocity vector
-    Vector2 translated_velocity{velocity.x+position.x,velocity.y+position.y};
-    DrawLineEx(position, translated_velocity, 2,ORANGE);
+    //Vector2 translated_velocity{velocity.x+position.x,velocity.y+position.y};
+    //DrawLineEx(position, translated_velocity, 2,ORANGE);
 
     
 }

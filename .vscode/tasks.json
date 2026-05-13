@@ -49,13 +49,13 @@
                 "isDefault": true
             },
             "detail": "Custom Task for Raylib building."
-        }
-        ,{
+        },
+        {
             "type": "process",
-            "label": "run build my task",
+            "label": "run my_build task",
             "command": "${fileDirname}\\${fileBasenameNoExtension}.exe",
-            
-            "detail": "Runs whatever previous built was."
+            "detail": "Runs whatever previous built was.",
+            "problemMatcher": []
         }
     ],
     "version": "2.0.0"

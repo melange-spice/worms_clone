@@ -24,9 +24,8 @@ int main()
     // map.load_textures("assets\\ground_20.png", "assets\\sky_20.png");
     mapp.load_textures("assets\\ground.png", "assets\\sky.png");
 
-
-    //TODO: from here 
-    //myLL<phy_obj*> objects_list;
+    // TODO: from here
+    // myLL<phy_obj*> objects_list;
 
     phy_obj **objects_list = nullptr;
     int total_objs = 0;
@@ -102,55 +101,87 @@ int main()
 
         if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
         {
-            dummy *created_dummy = new dummy(GetMousePosition(), 30, 0.0);
-            debris *created_debris = new debris(GetMousePosition(), 20, 0.0);
-            std::cout << "Created dummy object\n";
-
-            if (total_objs + 2 > max_size)
+            for (int i = 0; i < 20; i++)
             {
-                if (max_size == 0)
+                debris *created_debris = nullptr;
+
+                created_debris = new debris(GetMousePosition(), 6, 0.0);
+                
+                std::time_t result = std::time(nullptr);
+
+                int rx = rand()%30;
+                int ry = rand()%30;
+
+                if (rx<15)
                 {
-                    max_size = 1;
+                    rx *=-1;    
                 }
 
-                // make a new list greater that is double the previous size
-                phy_obj **obj_list_new = new phy_obj *[max_size * 2]
-                { nullptr };
-
-                // copy the old list
-                for (int i = 0; i < total_objs; i++)
+                if (ry<15)
                 {
-                    obj_list_new[i] = objects_list[i];
+                    ry*=-1;
                 }
-                obj_list_new[total_objs] = created_dummy;
-                total_objs++;
-                obj_list_new[total_objs] = created_debris;
+                
+                
 
-                // delete the dynamic pointers of old list
-                if (objects_list != nullptr)
+                float x = rx;
+                float y = ry;
+                
+                created_debris->velocity.x = x;
+                created_debris->velocity.y = y;
+
+                std::cout<<"->\tx,y: "<<x<<", "<<y<<std::endl;
+
+                // dummy *created_dummy = new dummy(GetMousePosition(), 30, 0.0);
+
+                std::cout << "Created dummy object\n";
+
+                if (total_objs + 1 > max_size)
                 {
-                    delete[] objects_list;
+                    if (max_size == 0)
+                    {
+                        max_size = 1;
+                    }
+
+                    // make a new list greater that is double the previous size
+                    phy_obj **obj_list_new = new phy_obj *[max_size * 2]
+                    { nullptr };
+
+                    // copy the old list
+                    for (int i = 0; i < total_objs; i++)
+                    {
+                        obj_list_new[i] = objects_list[i];
+                    }
+                    // obj_list_new[total_objs] = created_dummy;
+
+                    obj_list_new[total_objs] = created_debris;
+
+                    // delete the dynamic pointers of old list
+                    if (objects_list != nullptr)
+                    {
+                        delete[] objects_list;
+                    }
+
+                    // update the old list
+                    max_size *= 2;
+                    total_objs++;
+                    objects_list = obj_list_new;
+
+                    std::cout << "Allocated new list of size " << max_size << std::endl;
                 }
+                else
+                {
+                    // no need to increment the list directly append the list
+                    // objects_list[total_objs] = created_dummy;
 
-                // update the old list
-                max_size *= 2;
-                total_objs++;
-                objects_list = obj_list_new;
+                    objects_list[total_objs] = created_debris;
 
-                std::cout << "Allocated new list of size " << max_size << std::endl;
+                    total_objs++;
+
+                    std::cout << "Only appended the list new index = " << total_objs << std::endl;
+                }
+                std::cout << "Added phy obj " << total_objs << std::endl;
             }
-            else
-            {
-                // no need to increment the list directly append the list
-                objects_list[total_objs] = created_dummy;
-                total_objs++;
-                objects_list[total_objs] = created_debris;
-
-                total_objs++;
-
-                std::cout << "Only appended the list new index = " << total_objs << std::endl;
-            }
-            std::cout << "Added phy obj " << total_objs << std::endl;
 
             // log << "Added phy obj " << total_objs << std::endl;
         }
@@ -160,7 +191,7 @@ int main()
 
         // std::chrono::time_point start = std::chrono::high_resolution_clock::now();
 
-        //std::vector<Vector2> cp;
+        //std::vector<Vector2> cp[100];
         //  10 physics iterations per frame
         for (int j = 0; j < 10; j++)
         {
@@ -198,14 +229,20 @@ int main()
                 // loop will run approx 18 times?
 
                 bool collision_occured = false;
-                for (; sc_start_angle >= sc_end_angle; sc_start_angle -= 0.17453)
+
+                float num = mapp.tile_width * sqrtf((2 * objects_list[i]->radius + mapp.tile_width) * (2 * objects_list[i]->radius - mapp.tile_width));
+                float den = 2 * objects_list[i]->radius * objects_list[i]->radius;
+                float lim = asinf(num / den);
+                lim /= 2; // making the theta smaller cause otherwise collision is unrealistic for small phy_objects
+
+                for (; sc_start_angle >= sc_end_angle; sc_start_angle -= lim)
                 {
                     Vector2 collision_point{objects_list[i]->radius * cosf(sc_start_angle), objects_list[i]->radius * sinf(sc_start_angle)};
                     // translation necessary cause currently collision_point are centered about (0,0)
                     collision_point.x += potential_position.x;
                     collision_point.y += potential_position.y;
 
-                    //cp.push_back(collision_point);
+                    //cp[i].push_back(collision_point);
 
                     // now we can directly check with the map
                     // check if collision with between the collision_point and the map has occurred
@@ -217,13 +254,11 @@ int main()
                     // clamp x
                     if (map_x < 0)
                     {
-
                         map_x = 0;
                         clamp = true;
                     }
                     else if (map_x > 100)
                     {
-
                         map_x = 100;
                         clamp = true;
                     }
@@ -231,13 +266,11 @@ int main()
                     // clamp y
                     if (map_y < 0)
                     {
-
                         map_y = 0;
                         clamp = true;
                     }
                     else if (map_y > 60)
                     {
-
                         map_y = 60;
                         clamp = true;
                     }
@@ -322,7 +355,7 @@ int main()
 
                 if (velocity_mag < 0.1f && collision_occured == true)
                 {
-                    std::cout << velocity_mag << std::endl;
+                    //std::cout << velocity_mag << std::endl;
                     objects_list[i]->is_stable = true;
                     // objects_list[i]->velocity.x = 0;
                     // objects_list[i]->velocity.y = 0;
@@ -348,11 +381,11 @@ int main()
         {
             objects_list[i]->draw();
 
-            // for (int j = 0; j < cp.size(); j++)
+            // for (int j = 0; j < cp[i].size(); j++)
             // {
             //     // draw the velocity vector
 
-            //     DrawLineEx(objects_list[i]->position, cp[j], 2, BLUE);
+            //     DrawLineEx(objects_list[i]->position, cp[i][j], 2, BLUE);
             // }
         }
 
