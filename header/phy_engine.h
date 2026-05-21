@@ -18,6 +18,8 @@ private:
 
     void do_collision(phy_obj *obj, Vector2 &response);
 
+    void delete_dead_objects();
+
 public:
     void insertAtTail(phy_obj *value);
     void apply_physics(map *mapp);
@@ -29,17 +31,34 @@ public:
     ~phy_engine();
 };
 
-// draw the phy_obj circle of all the objects
-void phy_engine::draw_debug()
+// delete all the phy_objects whose is_dead == true
+void phy_engine::delete_dead_objects()
 {
     Node<phy_obj *> *tmp = head;
-    
+    Node<phy_obj *> *prev_tmp = head; //1 pointer behind tmp
+
     while (tmp != nullptr)
     {
         // current phy object
         phy_obj *obj = tmp->data;
         obj->draw_debug();
-        
+
+        // next phy_object in the linked list
+        tmp = tmp->next;
+    }
+}
+
+// draw the phy_obj circle of all the objects
+void phy_engine::draw_debug()
+{
+    Node<phy_obj *> *tmp = head;
+
+    while (tmp != nullptr)
+    {
+        // current phy object
+        phy_obj *obj = tmp->data;
+        obj->draw_debug();
+
         // next phy_object in the linked list
         tmp = tmp->next;
     }
@@ -97,10 +116,18 @@ void phy_engine::apply_physics(map *mapp)
             obj->position.y = potential_position.y;
         }
 
+        // TODO: is this doing anything how is is_stable gonna make phy_obj stop collision calculations?
         if (velocity_mag < 0.1f)
         {
             obj->is_stable = true;
         }
+
+        // //TODO: should I do it in apply physics function?
+        // //delete the current object
+        // if (obj->bounce_before_death == 0)
+        // {
+        //     /* code */
+        // }
 
         // next phy_object in the linked list
         tmp = tmp->next;
@@ -109,7 +136,7 @@ void phy_engine::apply_physics(map *mapp)
 
 // calculates the reflection vector given the normal vector (response) and obj
 // should only be called if collision has actually occured
-// refer to documentation of collision detection https://www.sunshine2k.de/articles/coding/vectorreflection/vectorreflection.html
+// refer to docs and the maths of vector reflection https://www.sunshine2k.de/articles/coding/vectorreflection/vectorreflection.html
 void phy_engine::do_collision(phy_obj *obj, Vector2 &response)
 {
     // invert the response vector
@@ -153,10 +180,16 @@ void phy_engine::do_collision(phy_obj *obj, Vector2 &response)
     v_reflection.x = v_parallel.x + v_perpendicular.x;
     v_reflection.y = v_parallel.y + v_perpendicular.y;
 
-    // TODO: friction
-    v_reflection.x *= 0.8;
-    v_reflection.y *= 0.8;
+    // friction
+    v_reflection.x *= obj->friction;
+    v_reflection.y *= obj->friction;
 
+    if (obj->bounce_before_death > 0)
+        obj->bounce_before_death--;
+    else if (obj->bounce_before_death == 0) // flag for deletion
+        obj->is_dead = true;
+
+    // Final velocity update
     obj->velocity.x = v_reflection.x;
     obj->velocity.y = v_reflection.y;
 }
@@ -169,7 +202,7 @@ float phy_engine::angle_step(float radius, int mapp_width)
     // refer to angle step derivation in the documentation
     // essentially implementing the formula
     //\theta=\arcsin(\dfrac{w\sqrt{(2r+w)(2r-w)}}{2r^2})
-    
+
     // TODO: check reaction with phy_obj radius = 6
     // radius<=5 problems start from this function
     float numerator = float(mapp_width) * sqrtf((2 * radius + mapp_width) * (2 * radius - mapp_width));
@@ -181,7 +214,6 @@ float phy_engine::angle_step(float radius, int mapp_width)
 
     return lim;
 }
-
 
 // given a phy_obj check if it has collided with the map
 // if the collision has occured it returns true and the response vector which is passed by ref
@@ -200,7 +232,7 @@ bool phy_engine::check_map_collision(phy_obj *obj, Vector2 potential_position, V
     response.y = 0;
 
     bool collision_occured = false;
-    float lim = angle_step(obj->radius, mapp->tile_width); 
+    float lim = angle_step(obj->radius, mapp->tile_width);
 
     // for every point on the semi-circle separated by the lim angle
     // check for collision on the point via mapp_grid

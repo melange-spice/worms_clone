@@ -18,17 +18,18 @@ public:
     Texture2D sky;
 
 public:
-    map(int tile_width, int width, int height);
-    map(int tile_width, int width, int height,const char* input_map_file);
+    map(int tile_width, int width, int height, char fill);
+    map(int tile_width, int width, int height, const char *input_map_file);
     void load_textures(const char *ground_texture, const char *sky_texture);
     void draw(bool with_lines) const;
-    
-    //dumps the map_grid to the file given
-    void output_map(const char* file_name);
+
+    // dumps the map_grid to the file given
+    void output_map(const char *file_name);
     ~map();
 };
 
-void map::output_map(const char* file_name){
+void map::output_map(const char *file_name)
+{
 
     std::ofstream output_file(file_name);
 
@@ -36,15 +37,13 @@ void map::output_map(const char* file_name){
     {
         for (int x = 0; x < map_width; x++)
         {
-            output_file<<map_grid[y][x];
+            output_file << map_grid[y][x];
         }
-        output_file<<std::endl;
+        output_file << std::endl;
     }
-    
-    
 }
 
-map::map(int tile_width, int screen_width, int screen_height,const char* input_map_file):tile_width{tile_width}, map_width{screen_width / tile_width}, map_height{screen_height / tile_width}
+map::map(int tile_width, int screen_width, int screen_height, const char *input_map_file) : tile_width{tile_width}, map_width{screen_width / tile_width}, map_height{screen_height / tile_width}
 {
 
     map_grid = new char *[map_height]{0};
@@ -62,7 +61,7 @@ map::map(int tile_width, int screen_width, int screen_height,const char* input_m
         {
             // TODO: terrain generations perlin noise?
             // 50x30 keep in mind the x,y are in map coordinates not pixel coordinates
-            map_file>>terrain;
+            map_file >> terrain;
             map_grid[y][x] = terrain;
         }
     }
@@ -74,7 +73,7 @@ void map::load_textures(const char *ground_texture, const char *sky_texture)
     sky = LoadTexture(sky_texture);
 }
 
-//if with_lines ==true then draw map_grid
+// if with_lines ==true then draw map_grid
 void map::draw(bool with_lines) const
 {
     for (int map_y = 0; map_y < map_height; map_y++)
@@ -84,7 +83,6 @@ void map::draw(bool with_lines) const
             int x = map_x * tile_width;
             int y = map_y * tile_width;
 
-        
             if (map_grid[map_y][map_x] == 'G')
             {
                 DrawTexture(ground, x, y, WHITE);
@@ -94,7 +92,7 @@ void map::draw(bool with_lines) const
                 DrawTexture(sky, x, y, WHITE);
             }
 
-            if (with_lines)//map grid
+            if (with_lines) // map grid
             {
                 DrawRectangleLines(x, y, tile_width, tile_width, BLACK);
             }
@@ -102,7 +100,8 @@ void map::draw(bool with_lines) const
     }
 }
 
-map::map(int tile_width, int screen_width, int screen_height) : tile_width{tile_width}, map_width{screen_width / tile_width}, map_height{screen_height / tile_width}
+// initialize the map with the given fill character
+map::map(int tile_width, int screen_width, int screen_height, char fill) : tile_width{tile_width}, map_width{screen_width / tile_width}, map_height{screen_height / tile_width}
 {
     map_grid = new char *[map_height]{0};
     for (int i = 0; i < map_height; i++)
@@ -114,14 +113,8 @@ map::map(int tile_width, int screen_width, int screen_height) : tile_width{tile_
     {
         for (int x = 0; x < map_width; x++)
         {
-            // TODO: terrain generations perlin noise?
-            // 50x30 keep in mind the x,y are in map coordinates not pixel coordinates
-            if (y <= 20)
-                map_grid[y][x] = 'S'; // S for sky
-            else
-            {
-                map_grid[y][x] = 'G'; // G for ground
-            }
+
+            map_grid[y][x] = fill; 
         }
     }
 }

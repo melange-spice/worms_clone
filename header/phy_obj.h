@@ -10,11 +10,22 @@ public:
     Vector2 velocity;
     Vector2 acceleration;
 
+    //if friction <1 then the values decrease after each iteration
+    //if friction >1 then the values decrease after each iteration
+    //if friction =1 then there is no friction
+    float friction;
     float radius;
     bool is_stable; //do we need to perform more phy calculations on the object?
+    bool is_dead;   //if true delete the said phy_object
+
+    //how many bounces should a phy object do before getting deleted from the world
+    // = -1 means object would keep on bouncing forever
+    // = 0 means object would get flagged for deletion making is_dead = true
+    // > 1 means objects have that bounces remaining before being dead
+    int bounce_before_death = -1;
 
 public:
-    phy_obj(Vector2 position, float radius, Vector2 velocity = {0, 0}, Vector2 acceleration = {0, 0});
+    phy_obj(Vector2 position, float radius, float friction=0.9, Vector2 velocity = {0, 0}, Vector2 acceleration = {0, 0});
 
 
     virtual void draw() = 0;
@@ -35,8 +46,8 @@ void phy_obj::draw_debug(){
     DrawLineEx(position, translated_velocity, 2,ORANGE);
 }
 
-phy_obj::phy_obj(Vector2 position, float radius, Vector2 velocity, Vector2 acceleration) : position{position}, radius{radius},
-    velocity{velocity}, acceleration{acceleration}, is_stable{false}
+phy_obj::phy_obj(Vector2 position, float radius,float friction, Vector2 velocity, Vector2 acceleration) : position{position}, radius{radius}, 
+    friction{friction}, velocity{velocity}, acceleration{acceleration}, is_stable{false}
 {
     
 }

@@ -15,16 +15,14 @@ int main()
 
     // Initialization
     //--------------------------------------------------------------------------------------
-    InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Worms shitty clone");
+    InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Worms yttihs clone");
     // WARNING NOTE: Textures MUST be loaded after Window initialization (OpenGL context is required)
 
-    // map mapp(10, SCREEN_WIDTH, SCREEN_HEIGHT);
     map mapp(10, SCREEN_WIDTH, SCREEN_HEIGHT, "map_input.txt");
+    //map mapp(10, SCREEN_WIDTH, SCREEN_HEIGHT, 'G');
     // map.load_textures("assets\\ground_20.png", "assets\\sky_20.png");
     mapp.load_textures("assets\\ground.png", "assets\\sky.png");
 
-    // TODO: from here
-    // myLL<phy_obj*> objects_list;
 
     phy_engine engine;
 
@@ -40,36 +38,6 @@ int main()
 
         //  Updates
         //----------------------------------------------------------------------------------
-
-        // if (IsKeyDown(KEY_W) == true)
-        // {
-        //     for (int i = 0; i < total_objs; i++)
-        //     {
-        //         objects_list[i]->velocity.y -= 5.0f;
-        //     }
-        // }
-        // if (IsKeyDown(KEY_S) == true)
-        // {
-        //     for (int i = 0; i < total_objs; i++)
-        //     {
-        //         objects_list[i]->velocity.y += 5.0f;
-        //     }
-        // }
-        // if (IsKeyDown(KEY_D) == true)
-        // {
-        //     for (int i = 0; i < total_objs; i++)
-        //     {
-        //         objects_list[i]->velocity.x += 5.0f;
-        //     }
-        // }
-        // if (IsKeyDown(KEY_A) == true)
-        // {
-        //     for (int i = 0; i < total_objs; i++)
-        //     {
-        //         objects_list[i]->velocity.x -= 5.0f;
-        //     }
-        // }
-
         if (IsKeyDown(KEY_M) == true)
         {
             mapp.output_map("map_output.txt");
@@ -94,6 +62,66 @@ int main()
             int map_x = mouse_pos.x / 10;
 
             mapp.map_grid[map_y][map_x] = 'S';
+        }
+
+        if (IsMouseButtonDown(MOUSE_BUTTON_LEFT))
+        {
+            Vector2 mouse_pos = GetMousePosition();
+            int radius = 30; //radius in pixel values not in map coordinates
+            int map_x = mouse_pos.x / 10;
+            int map_y1 = 0;
+            int map_y2 = 0;
+
+            for (int y = radius * -1; y <= radius; y++)
+            {
+                for (int x = radius * -1; x <= radius; x++)
+                {
+                    // x^2+y^2 = r^2 check equation of circle
+                    if ((x * x) + (y * y) <= (radius * radius))
+                    {
+                        // transform the pixel coordinates according to the mouse pos
+                        // and then convert the pixel coordinates to map_coordinates
+                        map_x = (x + mouse_pos.x) / 10;
+                        map_y1 = (y + mouse_pos.y) / 10;
+                        map_y2 = (y * -1 + mouse_pos.y) / 10;
+                        
+                        //out of bounds check
+                        //x coordinate check
+                        if (map_x< 0 )
+                        {
+                            map_x = 0;
+                        }
+                        else if (map_x>=mapp.map_width)
+                        {
+                            map_x = mapp.map_width-1;
+                        }
+                        
+                        //y coordinate check
+                        if (map_y1< 0)
+                        {
+                            map_y1 = 0;
+                        }
+                        else if (map_y1>=mapp.map_height)
+                        {
+                            map_y1 = mapp.map_height-1;
+                        }
+                        
+                        //-y coordinate check
+                        if (map_y2< 0)
+                        {
+                            map_y2 = 0;
+                        }
+                        else if (map_y2>=mapp.map_height)
+                        {
+                            map_y2 = mapp.map_height-1;
+                        }
+
+                        // draw to map
+                        mapp.map_grid[map_y1][map_x] = 'S';
+                        mapp.map_grid[map_y2][map_x] = 'S';
+                    }
+                }
+            }
         }
 
         if (IsKeyPressed(KEY_ONE))
@@ -137,10 +165,10 @@ int main()
             }
         }
         //-------------------------------------input check end---------------
-        std::cout << "total number of phy objects: " << engine.get_num_objects() << std::endl;
+        //std::cout << "total number of phy objects: " << engine.get_num_objects() << std::endl;
         //---------------------------apply physics start---------------------------
 
-        //std::chrono::time_point start = std::chrono::high_resolution_clock::now();
+        std::chrono::time_point start = std::chrono::high_resolution_clock::now();
 
         //   10 physics iterations per frame
         for (int j = 0; j < 10; j++)
@@ -148,9 +176,9 @@ int main()
             engine.apply_physics(&mapp);
         }
 
-        // std::chrono::time_point end = std::chrono::high_resolution_clock::now();
-        // std::chrono::duration d = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
-        // std::cout << d.count() << std::endl;
+        std::chrono::time_point end = std::chrono::high_resolution_clock::now();
+        std::chrono::duration d = std::chrono::duration_cast<std::chrono::microseconds>(end - start);
+        std::cout << d.count() << std::endl;
         // log << d.count() << std::endl;
 
         //---------------------------apply physics end---------------------------
@@ -161,9 +189,10 @@ int main()
         ClearBackground(RAYWHITE);
 
         mapp.draw(map_grid_toogle);
-
         engine.draw();
         //engine.draw_debug();
+
+        //std::cout<<GetFPS()<<std::endl;
 
         EndDrawing();
     }
