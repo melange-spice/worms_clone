@@ -65,6 +65,8 @@ map::map(int tile_width, int screen_width, int screen_height, const char *input_
             map_grid[y][x] = terrain;
         }
     }
+
+    map_file.close();
 }
 
 void map::load_textures(const char *ground_texture, const char *sky_texture)
@@ -125,7 +127,7 @@ map::~map()
     UnloadTexture(sky);
 
     // deallocate map 2D array first delete the inner most memory then then outermost
-    for (int i = 0; i < map_width; i++)
+    for (int i = 0; i < map_height; i++)
     {
         delete[] map_grid[i];
     }

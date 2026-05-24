@@ -20,12 +20,14 @@ public:
 
     //how many bounces should a phy object do before getting deleted from the world
     // = -1 means object would keep on bouncing forever
-    // = 0 means object would get flagged for deletion making is_dead = true
+    // == 1 means object would get flagged for deletion making is_dead = true
+    // == 0 
     // > 1 means objects have that bounces remaining before being dead
     int bounce_before_death = -1;
 
 public:
-    phy_obj(Vector2 position, float radius, float friction=0.9, Vector2 velocity = {0, 0}, Vector2 acceleration = {0, 0});
+    phy_obj(Vector2 position, float radius, float friction=0.9, int bounce_before_death = -1, 
+        Vector2 velocity = {0, 0}, Vector2 acceleration = {0, 0});
 
 
     virtual void draw() = 0;
@@ -46,8 +48,10 @@ void phy_obj::draw_debug(){
     DrawLineEx(position, translated_velocity, 2,ORANGE);
 }
 
-phy_obj::phy_obj(Vector2 position, float radius,float friction, Vector2 velocity, Vector2 acceleration) : position{position}, radius{radius}, 
-    friction{friction}, velocity{velocity}, acceleration{acceleration}, is_stable{false}
+phy_obj::phy_obj(Vector2 position, float radius,float friction,int bounce_before_death, Vector2 velocity, Vector2 acceleration) 
+    :   position{position}, radius{radius}, friction{friction}, bounce_before_death{bounce_before_death}, velocity{velocity}, 
+        acceleration{acceleration}, is_stable{false}, is_dead{false}
 {
+    
     
 }

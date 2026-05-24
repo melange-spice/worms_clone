@@ -1,7 +1,7 @@
 #pragma once
 #include "LinkedList.h"
 #include "phy_obj.h"
-#include "cmath"
+#include <cmath>
 #include "map.h"
 #include "raylib.h"
 #include <vector>
@@ -17,8 +17,7 @@ private:
     float angle_step(float radius, int mapp_width);
 
     void do_collision(phy_obj *obj, Vector2 &response);
-
-    void delete_dead_objects();
+    void delete_dead_object(Node<phy_obj *> *node);
 
 public:
     void insertAtTail(phy_obj *value);
@@ -31,21 +30,12 @@ public:
     ~phy_engine();
 };
 
-// delete all the phy_objects whose is_dead == true
-void phy_engine::delete_dead_objects()
+// deletes a single physics object implementation as well as the node from the dll
+void phy_engine::delete_dead_object(Node<phy_obj *> *node)
 {
-    Node<phy_obj *> *tmp = head;
-    Node<phy_obj *> *prev_tmp = head; //1 pointer behind tmp
-
-    while (tmp != nullptr)
-    {
-        // current phy object
-        phy_obj *obj = tmp->data;
-        obj->draw_debug();
-
-        // next phy_object in the linked list
-        tmp = tmp->next;
-    }
+    total_obj--;
+    delete node->data; // first delete the phy obj
+    delete_node(node); // now delete the node from the linked list
 }
 
 // draw the phy_obj circle of all the objects
@@ -122,15 +112,14 @@ void phy_engine::apply_physics(map *mapp)
             obj->is_stable = true;
         }
 
-        // //TODO: should I do it in apply physics function?
-        // //delete the current object
-        // if (obj->bounce_before_death == 0)
-        // {
-        //     /* code */
-        // }
+        Node<phy_obj *> *to_delete = tmp;
+        tmp = tmp->next; // go to next node before deleting this node
 
-        // next phy_object in the linked list
-        tmp = tmp->next;
+        // delete the previous object if flagged
+        if (obj->is_dead == true)
+        {
+            delete_dead_object(to_delete);
+        }
     }
 }
 
@@ -184,10 +173,13 @@ void phy_engine::do_collision(phy_obj *obj, Vector2 &response)
     v_reflection.x *= obj->friction;
     v_reflection.y *= obj->friction;
 
-    if (obj->bounce_before_death > 0)
+    if (obj->bounce_before_death > 1)
         obj->bounce_before_death--;
-    else if (obj->bounce_before_death == 0) // flag for deletion
+    else if (obj->bounce_before_death == 1) // flag for deletion
+    {
+        obj->bounce_before_death--;
         obj->is_dead = true;
+    }
 
     // Final velocity update
     obj->velocity.x = v_reflection.x;
@@ -232,7 +224,7 @@ bool phy_engine::check_map_collision(phy_obj *obj, Vector2 potential_position, V
     response.y = 0;
 
     bool collision_occured = false;
-    float lim = angle_step(obj->radius, mapp->tile_width);
+    float lim = angle_step(obj->radius, mapp->tile_width); // TODO: angle_step should be a constructor call
 
     // for every point on the semi-circle separated by the lim angle
     // check for collision on the point via mapp_grid
@@ -260,9 +252,9 @@ bool phy_engine::check_map_collision(phy_obj *obj, Vector2 potential_position, V
             map_x = 0;
             clamp = true;
         }
-        else if (map_x > 100)
+        else if (map_x >= 100)
         {
-            map_x = 100;
+            map_x = 99;
             clamp = true;
         }
 
@@ -272,9 +264,9 @@ bool phy_engine::check_map_collision(phy_obj *obj, Vector2 potential_position, V
             map_y = 0;
             clamp = true;
         }
-        else if (map_y > 60)
+        else if (map_y >= 60)
         {
-            map_y = 60;
+            map_y = 59;
             clamp = true;
         }
 
@@ -336,6 +328,18 @@ phy_engine::phy_engine() : total_obj{0}
 {
 }
 
+// go through all the nodes and delete the actual objects
+// before deleting the linked list pointers
 phy_engine::~phy_engine()
 {
+    Node<phy_obj *> *tmp = head;
+
+    while (tmp != nullptr)
+    {
+        phy_obj *obj = tmp->data;
+        delete obj; // dynamic data of every node of linked list
+
+        total_obj--;
+        tmp = tmp->next;
+    }
 }

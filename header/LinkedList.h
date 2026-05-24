@@ -5,10 +5,11 @@ struct Node
 {
     T data;
     Node *next;
+    Node *prev;     //doubly linked list
 };
 
 template <typename T>
-class LinkedList
+class LinkedList 
 {
 protected:
     Node<T> *head;
@@ -21,10 +22,40 @@ public:
     virtual bool isEmpty();
     virtual void deleteFromHead();
     virtual void deleteFromTail();
+    virtual void delete_node(Node<T>* node);
 
     LinkedList();
     ~LinkedList();
 };
+
+//delete an aribitarty node from the linked list
+template <typename T>
+void LinkedList<T>::delete_node(Node<T>* node){
+
+    if (node == nullptr)
+    {
+        std::cout<<"Error: delete_node(T* node) where node = nullptr\n";
+        return;
+    }
+    else if (node == head)
+    {
+        deleteFromHead();
+    }
+    else if (node == tail)
+    {
+        deleteFromTail();
+    }
+    else{
+        //we are in the middle of the linked list
+        node->prev->next = node->next;
+        node->next->prev = node->prev;
+
+        delete node;
+        node = nullptr;
+        
+    }
+    
+}
 
 template <typename T>
 LinkedList<T>::LinkedList() : head{nullptr}, tail{nullptr}
@@ -58,25 +89,19 @@ void LinkedList<T>::deleteFromTail()
 
     else
     {
-        Node<T> *t = head;
-        while (true)
-        {
-            if (t->next == tail)
-                break;
-
-            t = t->next;
-        }
-
-        delete tail;
-        t->next = nullptr;
-        tail = t;
+        Node<T> *t = tail;
+        tail = tail->prev;
+        tail->next = nullptr;
+       
+        delete t;
+        t = nullptr;
     }
 }
 
 template <typename T>
 void LinkedList<T>::deleteFromHead()
 {
-    if (isEmpty())
+    if (isEmpty()==true)
     {
         std::cout << "Error: linked list is empty, can't remove more items\n";
         return;
@@ -93,6 +118,7 @@ void LinkedList<T>::deleteFromHead()
     {
         Node<T> *t = head;
         head = head->next;
+        head->prev = nullptr;
         delete t;
         t = nullptr;
     }
@@ -112,9 +138,8 @@ bool LinkedList<T>::isEmpty()
 template <typename T>
 void LinkedList<T>::insertAtTail(T value)
 {
-    Node<T> *nn = new Node<T>;
-    nn->next = nullptr;
-    nn->data = value;
+    Node<T> *nn = new Node<T>{value,nullptr,nullptr};
+    
 
     if (head == nullptr && tail == nullptr) // empty LL (first Node<T> to be added)
     {
@@ -124,6 +149,7 @@ void LinkedList<T>::insertAtTail(T value)
     else // all the rest values (Nodes)
     {
         tail->next = nn;
+        nn->prev = tail;
         tail = nn;
     }
 }
@@ -131,10 +157,8 @@ void LinkedList<T>::insertAtTail(T value)
 template <typename T>
 void LinkedList<T>::insertAtHead(T value)
 {
-    Node<T> *nn = new Node<T>;
-    nn->next = nullptr;
-    nn->data = value;
-
+    Node<T> *nn = new Node<T>{value,nullptr,nullptr};
+    
     if (head == nullptr && tail == nullptr) // empty LL
     {
         head = nn;
@@ -143,6 +167,8 @@ void LinkedList<T>::insertAtHead(T value)
     else
     {
         nn->next = head;
+        head->prev = nn;
+
         head = nn;
     }
 }
