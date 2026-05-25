@@ -22,11 +22,42 @@ public:
     map(int tile_width, int width, int height, const char *input_map_file);
     void load_textures(const char *ground_texture, const char *sky_texture);
     void draw(bool with_lines) const;
+    void change_grid(Vector2 coordinate, char value);
 
     // dumps the map_grid to the file given
     void output_map(const char *file_name);
     ~map();
 };
+
+// given the coordinate put the value in map_grid
+// automatically clamp the coordinate if out of bound
+//assuming coordinate is already in map coordinate format and not in pixel coordinates
+void map::change_grid(Vector2 coordinate, char value)
+{
+    // check for out of bound
+    //  x coordinate check
+    if (coordinate.x < 0)
+    {
+        coordinate.x = 0;
+    }
+    else if (coordinate.x >= map_width)
+    {
+        coordinate.x = map_width - 1; //0 based indexing in map_grid
+    }
+
+    // y coordinate check
+    if (coordinate.y < 0)
+    {
+        coordinate.y = 0;
+    }
+    else if (coordinate.y >= map_height)
+    {
+        coordinate.y = map_height - 1; //0 based indexing in map_grid
+    }
+
+    map_grid[int(coordinate.y)][int(coordinate.x)] = value;
+    
+}
 
 void map::output_map(const char *file_name)
 {
@@ -116,7 +147,7 @@ map::map(int tile_width, int screen_width, int screen_height, char fill) : tile_
         for (int x = 0; x < map_width; x++)
         {
 
-            map_grid[y][x] = fill; 
+            map_grid[y][x] = fill;
         }
     }
 }

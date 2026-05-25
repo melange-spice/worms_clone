@@ -11,7 +11,7 @@ struct Node
 template <typename T>
 class LinkedList 
 {
-protected:
+public: //TODO: protected public only for now
     Node<T> *head;
     Node<T> *tail;
 

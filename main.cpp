@@ -7,6 +7,60 @@
 #include <fstream>
 #include "header/phy_engine.h"
 
+void explosion(map *mapp, phy_engine *engine)
+{
+    Vector2 mouse_pos = GetMousePosition();
+    int radius = 30; // radius in pixel values not in map coordinates
+    float map_x = mouse_pos.x / 10;
+    float map_y = 0;
+
+    for (int y = radius * -1; y <= radius; y++)
+    {
+        for (int x = radius * -1; x <= radius; x++)
+        {
+            // x^2+y^2 = r^2 check equation of circle
+            if ((x * x) + (y * y) <= (radius * radius))
+            {
+                // transform the pixel coordinates according to the mouse pos
+                // and then convert the pixel coordinates to map_coordinates
+                map_x = (x + mouse_pos.x) / 10;
+                map_y = (y + mouse_pos.y) / 10;
+
+                mapp->change_grid({map_x, map_y}, 'S');
+            }
+        }
+    }
+
+    for (int i = 0; i < 20; i++)
+    {
+        debris *created_debris = nullptr;
+        created_debris = new debris({mouse_pos.x, mouse_pos.y}, 6);
+        engine->insertAtTail(created_debris);
+    }
+
+    Node<phy_obj*> *tmp = engine->head;
+
+    while (tmp!=nullptr)
+    {
+        phy_obj* obj = tmp->data;
+        
+        //find the distance sqrt{(x2-x1)^2 + (y2-y1)^2}
+        float distance = sqrtf( (obj->position.x-mouse_pos.x) + (obj->position.y-mouse_pos.y));
+
+        if (distance<20)
+        {
+            obj->velocity.y = 100;
+        }
+        
+
+
+        tmp = tmp->next;
+    }
+    
+
+
+}
+
 int main()
 {
     {
@@ -20,7 +74,7 @@ int main()
 
         map mapp(10, SCREEN_WIDTH, SCREEN_HEIGHT, "map_input.txt");
         // map mapp(10, SCREEN_WIDTH, SCREEN_HEIGHT, 'G');
-        //  map.load_textures("assets\\ground_20.png", "assets\\sky_20.png");
+        //   map.load_textures("assets\\ground_20.png", "assets\\sky_20.png");
         mapp.load_textures("assets\\ground.png", "assets\\sky.png");
 
         phy_engine engine;
@@ -63,64 +117,9 @@ int main()
                 mapp.map_grid[map_y][map_x] = 'S';
             }
 
-            if (IsMouseButtonDown(MOUSE_BUTTON_LEFT))
+            if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
             {
-                Vector2 mouse_pos = GetMousePosition();
-                int radius = 30; // radius in pixel values not in map coordinates
-                int map_x = mouse_pos.x / 10;
-                int map_y1 = 0;
-                int map_y2 = 0;
-
-                for (int y = radius * -1; y <= radius; y++)
-                {
-                    for (int x = radius * -1; x <= radius; x++)
-                    {
-                        // x^2+y^2 = r^2 check equation of circle
-                        if ((x * x) + (y * y) <= (radius * radius))
-                        {
-                            // transform the pixel coordinates according to the mouse pos
-                            // and then convert the pixel coordinates to map_coordinates
-                            map_x = (x + mouse_pos.x) / 10;
-                            map_y1 = (y + mouse_pos.y) / 10;
-                            map_y2 = (y * -1 + mouse_pos.y) / 10;
-
-                            // out of bounds check
-                            // x coordinate check
-                            if (map_x < 0)
-                            {
-                                map_x = 0;
-                            }
-                            else if (map_x >= mapp.map_width)
-                            {
-                                map_x = mapp.map_width - 1;
-                            }
-
-                            // y coordinate check
-                            if (map_y1 < 0)
-                            {
-                                map_y1 = 0;
-                            }
-                            else if (map_y1 >= mapp.map_height)
-                            {
-                                map_y1 = mapp.map_height - 1;
-                            }
-
-                            //-y coordinate check
-                            if (map_y2 < 0)
-                            {
-                                map_y2 = 0;
-                            }
-                            else if (map_y2 >= mapp.map_height)
-                            {
-                                map_y2 = mapp.map_height - 1;
-                            }
-
-                            // draw to map
-                            mapp.map_grid[map_y1][map_x] = 'S';
-                            mapp.map_grid[map_y2][map_x] = 'S';
-                        }
-                    }
-                }
+                explosion(&mapp, &engine);
             }
 
             if (IsKeyPressed(KEY_ONE))
@@ -146,7 +145,7 @@ int main()
 
             //   10 physics iterations per frame
 
-            //std::cout << "total objs: " << engine.get_num_objects() << "\n";
+            // std::cout << "total objs: " << engine.get_num_objects() << "\n";
             for (int j = 0; j < 10; j++)
             {
                 engine.apply_physics(&mapp);
@@ -166,11 +165,10 @@ int main()
 
             mapp.draw(map_grid_toogle);
             engine.draw();
-            // engine.draw_debug();
-
-            // std::cout<<GetFPS()<<std::endl;
+            //  engine.draw_debug();
 
             EndDrawing();
+            // std::cout<<GetFPS()<<std::endl;
         }
 
         // De-Initialization
@@ -179,7 +177,7 @@ int main()
         CloseWindow(); // Close window and OpenGL context
         //--------------------------------------------------------------------------------------
     }
-    std::cout << "exit successfull\n";
-    // system("pause");
+    // std::cout << "exit successfull\n";
+    //  system("pause");
     return 0;
 }
