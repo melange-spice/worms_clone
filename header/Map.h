@@ -20,6 +20,8 @@ public:
 public:
     map(int tile_width, int width, int height, char fill);
     map(int tile_width, int width, int height, const char *input_map_file);
+    map(int tile_width, int width, int height);
+
     void load_textures(const char *ground_texture, const char *sky_texture);
     void draw(bool with_lines) const;
     void change_grid(Vector2 coordinate, char value);
@@ -28,6 +30,29 @@ public:
     void output_map(const char *file_name);
     ~map();
 };
+
+//initialize the map with level ground
+map::map(int tile_width, int width, int height):tile_width{tile_width}, map_width{width / tile_width}, map_height{height / tile_width}{
+    map_grid = new char *[map_height]{0};
+    for (int i = 0; i < map_height; i++)
+    {
+        map_grid[i] = new char[map_width]{0};
+    }
+
+    for (int y = 0; y < map_height; y++)
+    {
+        for (int x = 0; x < map_width; x++)
+        {
+            if (y>40)
+            {
+                map_grid[y][x] = 'G';
+            }
+            else{
+                map_grid[y][x] = 'S';
+            }
+        }
+    }
+}
 
 // given the coordinate put the value in map_grid
 // automatically clamp the coordinate if out of bound

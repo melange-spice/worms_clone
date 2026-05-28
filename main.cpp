@@ -10,7 +10,7 @@
 void explosion(map *mapp, phy_engine *engine)
 {
     Vector2 mouse_pos = GetMousePosition();
-    int radius = 30; // radius in pixel values not in map coordinates
+    int radius = 100; // radius in pixel values not in map coordinates
     float map_x = mouse_pos.x / 10;
     float map_y = 0;
 
@@ -40,16 +40,23 @@ void explosion(map *mapp, phy_engine *engine)
 
     Node<phy_obj*> *tmp = engine->head;
 
+    Vector2 blast_veloctity{};
+
     while (tmp!=nullptr)
     {
         phy_obj* obj = tmp->data;
-        
-        //find the distance sqrt{(x2-x1)^2 + (y2-y1)^2}
-        float distance = sqrtf( (obj->position.x-mouse_pos.x) + (obj->position.y-mouse_pos.y));
+        blast_veloctity.x = obj->position.x-mouse_pos.x;
+        blast_veloctity.y = obj->position.y-mouse_pos.y;
 
-        if (distance<20)
+        //find the distance sqrt{(x2-x1)^2 + (y2-y1)^2}
+        float distance = sqrtf(blast_veloctity.x*blast_veloctity.x + blast_veloctity.y*blast_veloctity.y);
+
+        if (distance-obj->radius<=radius && obj->radius==20)
         {
-            obj->velocity.y = 100;
+            blast_veloctity.x = blast_veloctity.x/distance *radius;
+            blast_veloctity.y = blast_veloctity.y/distance *radius;
+
+            obj->velocity = blast_veloctity;
         }
         
 
@@ -72,7 +79,8 @@ int main()
         InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Worms yttihs clone");
         // WARNING NOTE: Textures MUST be loaded after Window initialization (OpenGL context is required)
 
-        map mapp(10, SCREEN_WIDTH, SCREEN_HEIGHT, "map_input.txt");
+        //map mapp(10, SCREEN_WIDTH, SCREEN_HEIGHT, "map_input.txt");
+        map mapp(10, SCREEN_WIDTH, SCREEN_HEIGHT);
         // map mapp(10, SCREEN_WIDTH, SCREEN_HEIGHT, 'G');
         //   map.load_textures("assets\\ground_20.png", "assets\\sky_20.png");
         mapp.load_textures("assets\\ground.png", "assets\\sky.png");
@@ -163,8 +171,12 @@ int main()
             BeginDrawing();
             ClearBackground(RAYWHITE);
 
+            
+
             mapp.draw(map_grid_toogle);
             engine.draw();
+
+            DrawCircleLinesV(GetMousePosition(),100,BLACK);
             //  engine.draw_debug();
 
             EndDrawing();
