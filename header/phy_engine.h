@@ -19,6 +19,9 @@ private:
     void do_collision(phy_obj *obj, Vector2 &response);
     void delete_dead_object(Node<phy_obj *> *node);
 
+    // apply shock wave to all the phy objects
+    void apply_shockwave(Vector2 explosion_pos, int radius);
+
 public:
     void insertAtTail(phy_obj *value);
     void apply_physics(map *mapp);
@@ -26,9 +29,83 @@ public:
     void draw_debug();
     int get_num_objects();
 
+    void explosion(map *mapp, Vector2 position, int radius);
+
     phy_engine();
     ~phy_engine();
 };
+
+void phy_engine::apply_shockwave(Vector2 explosion_pos, int radius)
+{
+    static int clamp_factor = 100;
+
+    Node<phy_obj *> *tmp = head;
+    Vector2 blast_veloctity{};
+
+    while (tmp != nullptr)
+    {
+        phy_obj *obj = tmp->data;
+
+        // vector from the explosion position to the phy_obj position
+        blast_veloctity.x = obj->position.x - explosion_pos.x;
+        blast_veloctity.y = obj->position.y - explosion_pos.y;
+
+        // distance between explosion and phy_obj or equivalently
+        // the magnitude of the vector obtained above
+        float distance = sqrtf(blast_veloctity.x * blast_veloctity.x + blast_veloctity.y * blast_veloctity.y);
+
+        if (distance < 0.1f)
+            distance = 0.1f;
+
+        if (distance - obj->radius <= radius)
+        {
+            // normalization * factor dependent upon distance and radius * constant multiplication factor
+            blast_veloctity.x = (blast_veloctity.x / distance) * (radius * 30 / distance);
+            blast_veloctity.y = (blast_veloctity.y / distance) * (radius * 30 / distance);
+
+            // clamping
+            if (blast_veloctity.x > clamp_factor)
+            {
+                blast_veloctity.x = clamp_factor;
+            }
+            else if (blast_veloctity.x < -clamp_factor)
+            {
+                blast_veloctity.x = -clamp_factor;
+            }
+
+            if (blast_veloctity.y > clamp_factor)
+            {
+                blast_veloctity.y = clamp_factor;
+            }
+            else if (blast_veloctity.y < -clamp_factor)
+            {
+                blast_veloctity.y = -clamp_factor;
+            }
+
+            obj->velocity = blast_veloctity;
+        }
+
+        tmp = tmp->next;
+    }
+}
+
+// create an explosion with the given radius and position
+//  radius in pixel values not in map coordinates
+void phy_engine::explosion(map *mapp, Vector2 position, int radius)
+{
+    // midpoint circle in the map
+    mapp->make_circle(position, radius);
+
+    apply_shockwave(position,radius);
+
+    //an explosion of radius 10 should have about 3 debris objects
+    for (int i = 1; i < radius / 3.3333; i++)
+    {
+        debris *created_debris = nullptr;
+        created_debris = new debris({position.x, position.y}, 6);
+        insertAtTail(created_debris);
+    }
+}
 
 // deletes a single physics object implementation as well as the node from the dll
 void phy_engine::delete_dead_object(Node<phy_obj *> *node)
@@ -111,14 +188,20 @@ void phy_engine::apply_physics(map *mapp)
         {
             obj->is_stable = true;
         }
-
+        
         Node<phy_obj *> *to_delete = tmp;
         tmp = tmp->next; // go to next node before deleting this node
 
         // delete the previous object if flagged
         if (obj->is_dead == true)
         {
-            delete_dead_object(to_delete);
+            //TODO: determination of dead actions
+            if (obj->radius == 10){
+                explosion(mapp,obj->position,50);
+            }
+                
+
+                delete_dead_object(to_delete);
         }
     }
 }

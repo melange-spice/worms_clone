@@ -26,13 +26,41 @@ public:
     void draw(bool with_lines) const;
     void change_grid(Vector2 coordinate, char value);
 
+    // given pixel position and radius replace all the map tiles within
+    // the circle with the given replace char
+    void make_circle(Vector2 position, int radius, char replace = 'S');
+
     // dumps the map_grid to the file given
     void output_map(const char *file_name);
     ~map();
 };
 
-//initialize the map with level ground
-map::map(int tile_width, int width, int height):tile_width{tile_width}, map_width{width / tile_width}, map_height{height / tile_width}{
+void map::make_circle(Vector2 position, int radius, char replace)
+{
+    float map_x = position.x / tile_width;
+    float map_y = 0;
+
+    for (int y = radius * -1; y <= radius; y++)
+    {
+        for (int x = radius * -1; x <= radius; x++)
+        {
+            // x^2+y^2 = r^2 check equation of circle
+            if ((x * x) + (y * y) <= (radius * radius))
+            {
+                // transform the pixel coordinates according to the mouse pos
+                // and then convert the pixel coordinates to map_coordinates
+                map_x = (x + position.x) / 10;
+                map_y = (y + position.y) / 10;
+
+                change_grid({map_x,map_y},replace);
+            }
+        }
+    }
+}
+
+// initialize the map with level ground
+map::map(int tile_width, int width, int height) : tile_width{tile_width}, map_width{width / tile_width}, map_height{height / tile_width}
+{
     map_grid = new char *[map_height]{0};
     for (int i = 0; i < map_height; i++)
     {
@@ -43,11 +71,12 @@ map::map(int tile_width, int width, int height):tile_width{tile_width}, map_widt
     {
         for (int x = 0; x < map_width; x++)
         {
-            if (y>40)
+            if (y > 40)
             {
                 map_grid[y][x] = 'G';
             }
-            else{
+            else
+            {
                 map_grid[y][x] = 'S';
             }
         }
@@ -56,7 +85,7 @@ map::map(int tile_width, int width, int height):tile_width{tile_width}, map_widt
 
 // given the coordinate put the value in map_grid
 // automatically clamp the coordinate if out of bound
-//assuming coordinate is already in map coordinate format and not in pixel coordinates
+// assuming coordinate is already in map coordinate format and not in pixel coordinates
 void map::change_grid(Vector2 coordinate, char value)
 {
     // check for out of bound
@@ -67,7 +96,7 @@ void map::change_grid(Vector2 coordinate, char value)
     }
     else if (coordinate.x >= map_width)
     {
-        coordinate.x = map_width - 1; //0 based indexing in map_grid
+        coordinate.x = map_width - 1; // 0 based indexing in map_grid
     }
 
     // y coordinate check
@@ -77,11 +106,10 @@ void map::change_grid(Vector2 coordinate, char value)
     }
     else if (coordinate.y >= map_height)
     {
-        coordinate.y = map_height - 1; //0 based indexing in map_grid
+        coordinate.y = map_height - 1; // 0 based indexing in map_grid
     }
 
     map_grid[int(coordinate.y)][int(coordinate.x)] = value;
-    
 }
 
 void map::output_map(const char *file_name)

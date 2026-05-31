@@ -6,67 +6,9 @@
 #include <chrono>
 #include <fstream>
 #include "header/phy_engine.h"
+#include "header/missile.h"
 
-void explosion(map *mapp, phy_engine *engine)
-{
-    Vector2 mouse_pos = GetMousePosition();
-    int radius = 100; // radius in pixel values not in map coordinates
-    float map_x = mouse_pos.x / 10;
-    float map_y = 0;
-
-    for (int y = radius * -1; y <= radius; y++)
-    {
-        for (int x = radius * -1; x <= radius; x++)
-        {
-            // x^2+y^2 = r^2 check equation of circle
-            if ((x * x) + (y * y) <= (radius * radius))
-            {
-                // transform the pixel coordinates according to the mouse pos
-                // and then convert the pixel coordinates to map_coordinates
-                map_x = (x + mouse_pos.x) / 10;
-                map_y = (y + mouse_pos.y) / 10;
-
-                mapp->change_grid({map_x, map_y}, 'S');
-            }
-        }
-    }
-
-    for (int i = 0; i < 20; i++)
-    {
-        debris *created_debris = nullptr;
-        created_debris = new debris({mouse_pos.x, mouse_pos.y}, 6);
-        engine->insertAtTail(created_debris);
-    }
-
-    Node<phy_obj*> *tmp = engine->head;
-
-    Vector2 blast_veloctity{};
-
-    while (tmp!=nullptr)
-    {
-        phy_obj* obj = tmp->data;
-        blast_veloctity.x = obj->position.x-mouse_pos.x;
-        blast_veloctity.y = obj->position.y-mouse_pos.y;
-
-        //find the distance sqrt{(x2-x1)^2 + (y2-y1)^2}
-        float distance = sqrtf(blast_veloctity.x*blast_veloctity.x + blast_veloctity.y*blast_veloctity.y);
-
-        if (distance-obj->radius<=radius && obj->radius==20)
-        {
-            blast_veloctity.x = blast_veloctity.x/distance *radius;
-            blast_veloctity.y = blast_veloctity.y/distance *radius;
-
-            obj->velocity = blast_veloctity;
-        }
-        
-
-
-        tmp = tmp->next;
-    }
-    
-
-
-}
+int RADIUS = 20;
 
 int main()
 {
@@ -79,7 +21,7 @@ int main()
         InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Worms yttihs clone");
         // WARNING NOTE: Textures MUST be loaded after Window initialization (OpenGL context is required)
 
-        //map mapp(10, SCREEN_WIDTH, SCREEN_HEIGHT, "map_input.txt");
+        // map mapp(10, SCREEN_WIDTH, SCREEN_HEIGHT, "map_input.txt");
         map mapp(10, SCREEN_WIDTH, SCREEN_HEIGHT);
         // map mapp(10, SCREEN_WIDTH, SCREEN_HEIGHT, 'G');
         //   map.load_textures("assets\\ground_20.png", "assets\\sky_20.png");
@@ -92,8 +34,8 @@ int main()
         // Main game loop
 
         // std::ofstream log("log");
-
         bool map_grid_toogle = false;
+        bool display_debug_toogle = false;
         while (!WindowShouldClose()) // Detect window close button or ESC key
         {
 
@@ -114,6 +56,10 @@ int main()
                     map_grid_toogle = false;
                 }
             }
+            if (IsKeyPressed(KEY_P) == true)
+            {
+                system("pause");
+            }
 
             if ((IsMouseButtonDown(MOUSE_BUTTON_RIGHT)))
             {
@@ -127,7 +73,7 @@ int main()
 
             if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
             {
-                explosion(&mapp, &engine);
+                engine.explosion(&mapp, GetMousePosition(), RADIUS);
             }
 
             if (IsKeyPressed(KEY_ONE))
@@ -146,6 +92,33 @@ int main()
                     engine.insertAtTail(created_debris);
                 }
             }
+
+            if (IsKeyPressed(KEY_THREE))
+            {
+                missile *created_missile = nullptr;
+                created_missile = new missile(GetMousePosition(), 10, "assets\\missile1.png");
+                engine.insertAtTail(created_missile);
+            }
+
+            RADIUS += GetMouseWheelMove();
+
+            if (RADIUS < 1)
+            {
+                RADIUS = 1;
+            }
+
+            if (IsKeyPressed(KEY_TAB) == true)
+            {
+                if (display_debug_toogle == true)
+                {
+                    display_debug_toogle = false;
+                }
+                else
+                {
+                    display_debug_toogle = true;
+                }
+            }
+
             //-------------------------------------input check end---------------
             //---------------------------apply physics start---------------------------
 
@@ -171,16 +144,55 @@ int main()
             BeginDrawing();
             ClearBackground(RAYWHITE);
 
-            
-
             mapp.draw(map_grid_toogle);
-            engine.draw();
 
-            DrawCircleLinesV(GetMousePosition(),100,BLACK);
-            //  engine.draw_debug();
+            if (display_debug_toogle == false)
+            {
+                engine.draw();
+            }
+            else
+            {
+                engine.draw_debug();
+            }
+
+            Vector2 pos = GetMousePosition();
+            DrawCircleLinesV(pos, RADIUS, YELLOW);
+
+            Node<phy_obj *> *tmp = engine.head;
+            Vector2 dist_vec{};
+            float dist = 0.0f;
+            char d[60] = "this is the distance";
+            while (tmp != nullptr)
+            {
+                phy_obj *obj = tmp->data;
+
+                if (obj->radius >= 10)
+                {
+                    DrawLineEx(pos, obj->position, 1, PINK);
+                    dist_vec.x = obj->position.x - pos.x;
+                    dist_vec.y = obj->position.y - pos.y;
+
+                    dist = sqrt((dist_vec.x * dist_vec.x) + (dist_vec.y * dist_vec.y));
+                    snprintf(d, 60, "%f", dist);
+
+                    DrawText(d, obj->position.x + 20, obj->position.y + 20, 15, YELLOW);
+                }
+
+                if (obj->radius == 10)
+                {
+                    DrawCircleLinesV(obj->position, 50, YELLOW);
+                }
+
+                tmp = tmp->next;
+            }
+
+            snprintf(d, 60, "%i", RADIUS);
+            DrawText(d, pos.x + 20, pos.y, 20, YELLOW);
 
             EndDrawing();
-            // std::cout<<GetFPS()<<std::endl;
+
+            // std::cout <<"total phy_objs: "<< engine.get_num_objects() << "\n";
+            //   std::cout<<GetFPS()<<std::endl;
         }
 
         // De-Initialization
@@ -189,7 +201,7 @@ int main()
         CloseWindow(); // Close window and OpenGL context
         //--------------------------------------------------------------------------------------
     }
-    // std::cout << "exit successfull\n";
+    std::cout << "exit successfull\n";
     //  system("pause");
     return 0;
 }

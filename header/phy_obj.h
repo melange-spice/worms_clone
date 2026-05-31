@@ -7,16 +7,16 @@ class phy_obj
 
 public:
     Vector2 position;
-    Vector2 velocity;
-    Vector2 acceleration;
+    Vector2 velocity = {0,0};
+    Vector2 acceleration = {0,0};
 
     //if friction <1 then the values decrease after each iteration
     //if friction >1 then the values decrease after each iteration
     //if friction =1 then there is no friction
-    float friction;
+    float friction = 0.9f;
     float radius;
-    bool is_stable; //do we need to perform more phy calculations on the object?
-    bool is_dead;   //if true delete the said phy_object
+    bool is_stable = false; //do we need to perform more phy calculations on the object?
+    bool is_dead = false;   //if true delete the said phy_object
 
     //how many bounces should a phy object do before getting deleted from the world
     // = -1 means object would keep on bouncing forever
@@ -26,8 +26,11 @@ public:
     int bounce_before_death = -1;
 
 public:
-    phy_obj(Vector2 position, float radius, float friction=0.9, int bounce_before_death = -1, 
-        Vector2 velocity = {0, 0}, Vector2 acceleration = {0, 0});
+    phy_obj(Vector2 position, float radius, float friction, int bounce_before_death, 
+        Vector2 velocity, Vector2 acceleration);
+    phy_obj(Vector2 position, float radius);
+    phy_obj(Vector2 position, float radius, int bounce_before_death);
+    phy_obj(Vector2 position, float radius, float friction, int bounce_before_death);
 
 
     virtual void draw() = 0;
@@ -48,10 +51,24 @@ void phy_obj::draw_debug(){
     DrawLineEx(position, translated_velocity, 2,ORANGE);
 }
 
-phy_obj::phy_obj(Vector2 position, float radius,float friction,int bounce_before_death, Vector2 velocity, Vector2 acceleration) 
-    :   position{position}, radius{radius}, friction{friction}, bounce_before_death{bounce_before_death}, velocity{velocity}, 
-        acceleration{acceleration}, is_stable{false}, is_dead{false}
+phy_obj::phy_obj(Vector2 position, float radius,float friction,int bounce_before_death, Vector2 velocity, Vector2 acceleration)
+    :   position{position}, radius{radius}, friction{friction}, bounce_before_death{bounce_before_death}, velocity{velocity},
+        acceleration{acceleration}
 {
-    
-    
+}
+
+
+phy_obj::phy_obj(Vector2 position, float radius)
+    :   position{position}, radius{radius}
+{
+}
+
+phy_obj::phy_obj(Vector2 position, float radius, int bounce_before_death)
+    :   position{position}, radius{radius}, bounce_before_death{bounce_before_death}
+{
+}
+
+phy_obj::phy_obj(Vector2 position, float radius, float friction, int bounce_before_death)
+    :   position{position}, radius{radius}, friction{friction}, bounce_before_death{bounce_before_death}
+{
 }

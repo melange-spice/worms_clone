@@ -16,6 +16,7 @@ public:
     debris(Vector2 position, float radius);
 
     void draw();
+    void draw_debug();
 
     ~debris();
 };
@@ -49,7 +50,7 @@ debris::~debris()
 {
 }
 
-debris::debris(Vector2 position, float radius) : phy_obj(position, radius, 0.7, 10)
+debris::debris(Vector2 position, float radius) : phy_obj(position, radius, 0.7f, 10)
 {
     // top left corner
     rec.x = radius * cosf((3 * PI) / 4) + position.x;
@@ -70,6 +71,22 @@ debris::debris(Vector2 position, float radius) : phy_obj(position, radius, 0.7, 
 
 void debris::draw()
 {
+    // translate the coordinates of the rectangle
+    rec.x = radius * cosf((3 * PI) / 4) + position.x;
+    rec.y = radius * sinf((3 * PI) / 4) + position.y;
+
+    // without this the rectangle was being drawn from the bottom left corner
+    // cause of the inverted origin?
+    rec.y -= rec.height;
+
+    // draw the rec
+    DrawRectangleRec(rec, DARKGREEN);
+}
+
+void debris::draw_debug()
+{
+    phy_obj::draw_debug();
+
     // translate the coordinates of the rectangle
     rec.x = radius * cosf((3 * PI) / 4) + position.x;
     rec.y = radius * sinf((3 * PI) / 4) + position.y;
