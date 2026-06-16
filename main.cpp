@@ -7,9 +7,10 @@
 #include <fstream>
 #include "header/phy_engine.h"
 #include "header/missile.h"
+#include "header/tank.h"
 
 int RADIUS = 20;
-
+int DEBUG_DISPLAY = 0;
 int main()
 {
     {
@@ -21,8 +22,8 @@ int main()
         InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Worms yttihs clone");
         // WARNING NOTE: Textures MUST be loaded after Window initialization (OpenGL context is required)
 
-        // map mapp(10, SCREEN_WIDTH, SCREEN_HEIGHT, "map_input.txt");
-        map mapp(10, SCREEN_WIDTH, SCREEN_HEIGHT);
+         map mapp(10, SCREEN_WIDTH, SCREEN_HEIGHT, "map_input.txt");
+        //map mapp(10, SCREEN_WIDTH, SCREEN_HEIGHT);
         // map mapp(10, SCREEN_WIDTH, SCREEN_HEIGHT, 'G');
         //   map.load_textures("assets\\ground_20.png", "assets\\sky_20.png");
         mapp.load_textures("assets\\ground.png", "assets\\sky.png");
@@ -99,6 +100,12 @@ int main()
                 created_missile = new missile(GetMousePosition(), 10, "assets\\missile1.png");
                 engine.insertAtTail(created_missile);
             }
+            if (IsKeyPressed(KEY_FOUR))
+            {
+                tank *created_tank = nullptr;
+                created_tank = new tank(GetMousePosition(), 18, "assets\\tankred.png");
+                engine.insertAtTail(created_tank);
+            }
 
             RADIUS += GetMouseWheelMove();
 
@@ -158,36 +165,36 @@ int main()
             Vector2 pos = GetMousePosition();
             DrawCircleLinesV(pos, RADIUS, YELLOW);
 
-            Node<phy_obj *> *tmp = engine.head;
-            Vector2 dist_vec{};
-            float dist = 0.0f;
-            char d[60] = "this is the distance";
-            while (tmp != nullptr)
-            {
-                phy_obj *obj = tmp->data;
+            // Node<phy_obj *> *tmp = engine.head;
+            // Vector2 dist_vec{};
+            // float dist = 0.0f;
+            // char d[60] = "this is the distance";
+            // while (tmp != nullptr)
+            // {
+            //     phy_obj *obj = tmp->data;
 
-                if (obj->radius >= 10)
-                {
-                    DrawLineEx(pos, obj->position, 1, PINK);
-                    dist_vec.x = obj->position.x - pos.x;
-                    dist_vec.y = obj->position.y - pos.y;
+            //     if (obj->radius >= 10)
+            //     {
+            //         DrawLineEx(pos, obj->position, 1, PINK);
+            //         dist_vec.x = obj->position.x - pos.x;
+            //         dist_vec.y = obj->position.y - pos.y;
 
-                    dist = sqrt((dist_vec.x * dist_vec.x) + (dist_vec.y * dist_vec.y));
-                    snprintf(d, 60, "%f", dist);
+            //         dist = sqrt((dist_vec.x * dist_vec.x) + (dist_vec.y * dist_vec.y));
+            //         snprintf(d, 60, "%f", dist);
 
-                    DrawText(d, obj->position.x + 20, obj->position.y + 20, 15, YELLOW);
-                }
+            //         DrawText(d, obj->position.x + 20, obj->position.y + 20, 15, YELLOW);
+            //     }
 
-                if (obj->radius == 10)
-                {
-                    DrawCircleLinesV(obj->position, 50, YELLOW);
-                }
+            //     if (obj->radius == 10)
+            //     {
+            //         DrawCircleLinesV(obj->position, 50, YELLOW);
+            //     }
 
-                tmp = tmp->next;
-            }
+            //     tmp = tmp->next;
+            // }
 
-            snprintf(d, 60, "%i", RADIUS);
-            DrawText(d, pos.x + 20, pos.y, 20, YELLOW);
+            //snprintf(d, 60, "%i", RADIUS);
+            //DrawText(d, pos.x + 20, pos.y, 20, YELLOW);
 
             EndDrawing();
 

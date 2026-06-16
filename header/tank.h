@@ -2,25 +2,25 @@
 #include "phy_obj.h"
 #include "raylib.h"
 
-class missile : public phy_obj
+class tank : public phy_obj
 {
-    Texture2D missile_texture{};
-    Rectangle texture_rec{0, 0, 12, 36}; // rectangle with the same dimension as the given texture object
+    Texture2D tank_texture{};
+    Rectangle texture_rec{0, 0, 64, 64}; // rectangle with the same dimension as the given texture object
 
 public:
     //TODO: automatic detrmination of phy obj radius from the texture dimensions
-    missile(Vector2 position, float radius, const char *missile_texture);
-    ~missile();
+    tank(Vector2 position, float radius, const char *tank_texture);
+    ~tank();
     void draw();
     void draw_debug();
 };
 
-missile::missile(Vector2 position, float radius, const char *missile_texture) : phy_obj(position, radius, 1)
+tank::tank(Vector2 position, float radius, const char *tank_texture) : phy_obj(position, radius, 0.3,0)
 {
-    this->missile_texture = LoadTexture(missile_texture);
+    this->tank_texture = LoadTexture(tank_texture);
 }
 
-void missile::draw()
+void tank::draw()
 {
     // translate the coordinates of the rectangle
     texture_rec.x = radius * cosf((3 * PI) / 4) + position.x;
@@ -47,10 +47,10 @@ void missile::draw()
     texture_rec.x += dx;
     texture_rec.y += dy;
 
-    DrawTextureEx(missile_texture, {texture_rec.x, texture_rec.y}, 0, 1, WHITE);
+    DrawTextureEx(tank_texture, {texture_rec.x, texture_rec.y}, 0, 1, WHITE);
 }
 
-void missile::draw_debug()
+void tank::draw_debug()
 {
     phy_obj::draw_debug();
     // float angle = atan2f(-1*velocity.y,velocity.x);
@@ -82,11 +82,11 @@ void missile::draw_debug()
     texture_rec.x += dx;
     texture_rec.y += dy;
 
-    DrawTextureEx(missile_texture, {texture_rec.x, texture_rec.y}, 0, 1, WHITE);
-    //DrawRectangleLinesEx(texture_rec, 1, BLACK);
+    DrawTextureEx(tank_texture, {texture_rec.x, texture_rec.y}, 0, 1, WHITE);
+    DrawRectangleLinesEx(texture_rec, 1, BLACK);
 }
 
-missile::~missile()
+tank::~tank()
 {
-    UnloadTexture(missile_texture);
+    UnloadTexture(tank_texture);
 }

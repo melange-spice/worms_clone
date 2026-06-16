@@ -25,6 +25,7 @@ public:
     // > 1 means objects have that bounces remaining before being dead
     int bounce_before_death = -1;
 
+    
 public:
     phy_obj(Vector2 position, float radius, float friction, int bounce_before_death, 
         Vector2 velocity, Vector2 acceleration);
