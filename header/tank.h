@@ -5,10 +5,9 @@
 class tank : public phy_obj
 {
     Texture2D tank_texture{};
-    Rectangle texture_rec{0, 0, 64, 64}; // rectangle with the same dimension as the given texture object
+    Rectangle texture_rec{}; 
 
 public:
-    //TODO: automatic detrmination of phy obj radius from the texture dimensions
     tank(Vector2 position, float radius, const char *tank_texture);
     ~tank();
     void draw();
@@ -18,6 +17,10 @@ public:
 tank::tank(Vector2 position, float radius, const char *tank_texture) : phy_obj(position, radius, 0.3,0)
 {
     this->tank_texture = LoadTexture(tank_texture);
+
+    // rectangle with the same dimension as the given texture object
+    texture_rec.width = this->tank_texture.width;
+    texture_rec.height = this->tank_texture.height;
 }
 
 void tank::draw()

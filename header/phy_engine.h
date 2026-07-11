@@ -96,9 +96,9 @@ void phy_engine::explosion(map *mapp, Vector2 position, int radius)
     // midpoint circle in the map
     mapp->make_circle(position, radius);
 
-    apply_shockwave(position,radius);
+    apply_shockwave(position, radius);
 
-    //an explosion of radius 10 should have about 3 debris objects
+    // an explosion of radius 10 should have about 3 debris objects
     for (int i = 1; i < radius / 3.3333; i++)
     {
         debris *created_debris = nullptr;
@@ -188,20 +188,20 @@ void phy_engine::apply_physics(map *mapp)
         {
             obj->is_stable = true;
         }
-        
+
         Node<phy_obj *> *to_delete = tmp;
         tmp = tmp->next; // go to next node before deleting this node
 
         // delete the previous object if flagged
         if (obj->is_dead == true)
         {
-            //TODO: determination of dead actions
-            if (obj->radius == 10){
-                explosion(mapp,obj->position,50);
+            // TODO: determination of dead actions
+            if (obj->radius == 10)
+            {
+                explosion(mapp, obj->position, 50);
             }
-                
 
-                delete_dead_object(to_delete);
+            delete_dead_object(to_delete);
         }
     }
 }
