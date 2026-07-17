@@ -156,7 +156,6 @@ void phy_engine::draw()
 void phy_engine::apply_physics(map *mapp)
 {
     Node<phy_obj *> *tmp = head;
-
     while (tmp != nullptr)
     {
         // current phy object
@@ -302,6 +301,10 @@ bool phy_engine::check_map_collision(phy_obj *obj, Vector2 potential_position, V
     float sc_start_angle = v_angle + (PI / 2.0);
     float sc_end_angle = v_angle - (PI / 2.0);
 
+    obj->start_angle = sc_start_angle*180/PI;
+    obj->end_angle = sc_end_angle*180/PI;
+    
+
     // make sure passed response vector is null
     response.x = 0;
     response.y = 0;
@@ -320,15 +323,18 @@ bool phy_engine::check_map_collision(phy_obj *obj, Vector2 potential_position, V
         collision_point.x += potential_position.x;
         collision_point.y += potential_position.y;
 
+        
+
         // now we can directly check with the map via map_grid
         // check if collision with between the collision_point and the map has occurred
 
         // conversion from pixel co-ordinates to map_co-ordinates
+        //TODO: map block width 
         int map_x = collision_point.x / 10;
         int map_y = collision_point.y / 10;
 
         bool clamp = false;
-        // TODO: map out of bounds check !!!
+        // TODO: map out of bounds check !!! 
         // clamp x
         if (map_x < 0)
         {
@@ -372,6 +378,7 @@ bool phy_engine::check_map_collision(phy_obj *obj, Vector2 potential_position, V
 
             collision_occured = true;
         }
+        
     }
 
     return collision_occured; // response is returned via by ref parameter passed in

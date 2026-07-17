@@ -3,35 +3,9 @@ TODO: map camera scroll? https://youtu.be/EHlaJvQpW3U?t=655
 
 private static var of pair of floats in dummy? https://youtu.be/EHlaJvQpW3U?t=856
 
-TODO: linked list for phy objects https://youtu.be/EHlaJvQpW3U?t=984
-
 TODO: changes happening to phy obj get applied to the child immediately
 
-TODO: // if (IsKeyDown(KEY_W) == true)
-        // {
-        //     for (int i = 0; i < total_objs; i++)
-        //     {
-        //         objects_list[i]->velocity.y -= 5.0f;
-        //     }
-        // }
-        // if (IsKeyDown(KEY_S) == true)
-        // {
-        //     for (int i = 0; i < total_objs; i++)
-        //     {
-        //         objects_list[i]->velocity.y += 5.0f;
-        //     }
-        // }
-        // if (IsKeyDown(KEY_D) == true)
-        // {
-        //     for (int i = 0; i < total_objs; i++)
-        //     {
-        //         objects_list[i]->velocity.x += 5.0f;
-        //     }
-        // }
-        // if (IsKeyDown(KEY_A) == true)
-        // {
-        //     for (int i = 0; i < total_objs; i++)
-        //     {
-        //         objects_list[i]->velocity.x -= 5.0f;
-        //     }
-        // }
+TODO: possible states of the game:
+        1) input check
+
+WASD velcoity increment movement is make the character stuck

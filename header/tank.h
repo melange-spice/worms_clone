@@ -14,7 +14,7 @@ public:
     void draw_debug();
 };
 
-tank::tank(Vector2 position, float radius, const char *tank_texture) : phy_obj(position, radius, 0.3,0)
+tank::tank(Vector2 position, float radius, const char *tank_texture) : phy_obj(position, radius, 0.3,-1)
 {
     this->tank_texture = LoadTexture(tank_texture);
 
