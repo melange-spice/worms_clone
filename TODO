@@ -9,3 +9,6 @@ TODO: possible states of the game:
         1) input check
 
 WASD velcoity increment movement is make the character stuck
+
+compilation command:
+g++ -fdiagnostics-color=always -g main.cpp debris.cpp dummy.cpp map.cpp missile.cpp phy_engine.cpp phy_obj.cpp tank.cpp -o main.exe -iquote "C:/Users/pc/Desktop/worms_clone/headers" -L"C:/Users/pc/Desktop/worms_clone/libraries" -lraylib -lgdi32 -lwinmm

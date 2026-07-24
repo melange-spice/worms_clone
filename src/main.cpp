@@ -1,13 +1,13 @@
-#include "header/raylib.h"
-#include "header/map.h"
-#include "header/dummy.h"
-#include "header/debris.h"
+#include "raylib.h"
+#include "map.h"
+#include "dummy.h"
+#include "debris.h"
 #include <iostream>
 #include <chrono>
 #include <fstream>
-#include "header/phy_engine.h"
-#include "header/missile.h"
-#include "header/tank.h"
+#include "phy_engine.h"
+#include "missile.h"
+#include "tank.h"
 
 int RADIUS = 0;
 int DEBUG_DISPLAY = 0;
@@ -22,11 +22,11 @@ int main()
         InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Worms yttihs clone");
         // WARNING NOTE: Textures MUST be loaded after Window initialization (OpenGL context is required)
 
-        //map mapp(10, SCREEN_WIDTH, SCREEN_HEIGHT, "map_input.txt");
-         map mapp(10, SCREEN_WIDTH, SCREEN_HEIGHT);
+        map mapp(10, SCREEN_WIDTH, SCREEN_HEIGHT, "map_input.txt");
+         //map mapp(10, SCREEN_WIDTH, SCREEN_HEIGHT);
         //  map mapp(10, SCREEN_WIDTH, SCREEN_HEIGHT, 'G');
         //    map.load_textures("assets\\ground_20.png", "assets\\sky_20.png");
-        mapp.load_textures("assets\\ground.png", "assets\\sky.png");
+        mapp.load_textures("..\\assets\\ground.png", "..\\assets\\sky.png");
 
         
 
@@ -102,14 +102,14 @@ int main()
             if (IsKeyPressed(KEY_THREE))
             {
                 missile *created_missile = nullptr;
-                created_missile = new missile(GetMousePosition(), 10, "assets\\missile1.png");
+                created_missile = new missile(GetMousePosition(), 10, "..\\assets\\missile1.png");
                 engine.insertAtTail(created_missile);
             }
             
             if (IsKeyPressed(KEY_FOUR))
             {
                 tank *created_tank = nullptr;
-                created_tank = new tank(GetMousePosition(), 18, "assets\\tankred.png");
+                created_tank = new tank(GetMousePosition(), 18, "..\\assets\\tankred.png");
                 engine.insertAtTail(created_tank);
                 player = created_tank;
             }

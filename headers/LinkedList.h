@@ -1,11 +1,13 @@
 #pragma once
 #include <iostream>
+//custom doubly linked list
+
 template <typename T>
 struct Node
 {
     T data;
     Node *next;
-    Node *prev;     //doubly linked list
+    Node *prev;     
 };
 
 template <typename T>
@@ -34,7 +36,7 @@ void LinkedList<T>::delete_node(Node<T>* node){
 
     if (node == nullptr)
     {
-        std::cout<<"Error: delete_node(T* node) where node = nullptr\n";
+        std::cerr<<"Error: delete_node(T* node) where node = nullptr\n";
         return;
     }
     else if (node == head)
@@ -76,7 +78,7 @@ void LinkedList<T>::deleteFromTail()
 {
     if (isEmpty())
     {
-        std::cout << "Error: linked list is empty, can't remove more items\n";
+        std::cerr << "Error: linked list is empty, can't remove more items\n";
         return;
     }
 
@@ -103,7 +105,7 @@ void LinkedList<T>::deleteFromHead()
 {
     if (isEmpty()==true)
     {
-        std::cout << "Error: linked list is empty, can't remove more items\n";
+        std::cerr << "Error: linked list is empty, can't remove more items\n";
         return;
     }
 

@@ -1,20 +1,6 @@
-#pragma once
-#include "phy_obj.h"
-#include "raylib.h"
+#include "tank.h"
 
-class tank : public phy_obj
-{
-    Texture2D tank_texture{};
-    Rectangle texture_rec{}; 
-
-public:
-    tank(Vector2 position, float radius, const char *tank_texture);
-    ~tank();
-    void draw();
-    void draw_debug();
-};
-
-tank::tank(Vector2 position, float radius, const char *tank_texture) : phy_obj(position, radius, 0.3,-1)
+tank::tank(Vector2 position, float radius, const char *tank_texture) : phy_obj(position, radius, 0.3, -1)
 {
     this->tank_texture = LoadTexture(tank_texture);
 
@@ -31,7 +17,7 @@ void tank::draw()
 
     { // change in y between texture_rec's  top left point and bottom left point of the circumscribed rectangle
         float bottom_left_y = radius * sinf((5 * PI) / 4) + position.y;
-        float dy = texture_rec.y - bottom_left_y; 
+        float dy = texture_rec.y - bottom_left_y;
 
         // without this the rectangle was being drawn from the bottom left corner
         // cause of the inverted origin?
