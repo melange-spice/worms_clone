@@ -17,16 +17,16 @@ int main()
         constexpr int SCREEN_WIDTH = 1000;
         constexpr int SCREEN_HEIGHT = 600;
 
-        // Initialization
+        // Initialization //
         //--------------------------------------------------------------------------------------
         InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Worms yttihs clone");
         // WARNING NOTE: Textures MUST be loaded after Window initialization (OpenGL context is required)
 
-        map mapp(10, SCREEN_WIDTH, SCREEN_HEIGHT, "map_input.txt");
+        map mapp(10, SCREEN_WIDTH, SCREEN_HEIGHT, "assets\\map_input.txt");
          //map mapp(10, SCREEN_WIDTH, SCREEN_HEIGHT);
         //  map mapp(10, SCREEN_WIDTH, SCREEN_HEIGHT, 'G');
         //    map.load_textures("assets\\ground_20.png", "assets\\sky_20.png");
-        mapp.load_textures("..\\assets\\ground.png", "..\\assets\\sky.png");
+        mapp.load_textures("assets\\ground.png", "assets\\sky.png");
 
         
 
@@ -102,14 +102,14 @@ int main()
             if (IsKeyPressed(KEY_THREE))
             {
                 missile *created_missile = nullptr;
-                created_missile = new missile(GetMousePosition(), 10, "..\\assets\\missile1.png");
+                created_missile = new missile(GetMousePosition(), 10, "assets\\missile1.png");
                 engine.insertAtTail(created_missile);
             }
             
             if (IsKeyPressed(KEY_FOUR))
             {
                 tank *created_tank = nullptr;
-                created_tank = new tank(GetMousePosition(), 18, "..\\assets\\tankred.png");
+                created_tank = new tank(GetMousePosition(), 18, "assets\\tankred.png");
                 engine.insertAtTail(created_tank);
                 player = created_tank;
             }
@@ -192,7 +192,7 @@ int main()
             //  Draw
             //----------------------------------------------------------------------------------
             BeginDrawing();
-            ClearBackground(RAYWHITE);
+            ClearBackground(WHITE);
             mapp.draw(map_grid_toogle);
 
             
@@ -207,7 +207,7 @@ int main()
             }
 
             Vector2 pos = GetMousePosition();
-            DrawCircleLinesV(pos, RADIUS, YELLOW);
+            DrawCircleLinesV(pos, RADIUS, GREEN);
 
            
            

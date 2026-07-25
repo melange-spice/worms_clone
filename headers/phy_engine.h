@@ -1,5 +1,5 @@
 #pragma once
-#include "LinkedList.h"
+#include "linked_list.h"
 #include "phy_obj.h"
 #include <cmath>
 #include "map.h"
@@ -7,7 +7,7 @@
 #include <vector>
 
 // phy_engine is responsible for applying physics on all the phy_obj in the game
-class phy_engine : public LinkedList<phy_obj *>
+class phy_engine : public linked_list<phy_obj *>
 {
 private:
     int total_obj;

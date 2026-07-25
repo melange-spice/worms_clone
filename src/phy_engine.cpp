@@ -377,7 +377,7 @@ Vector2 phy_engine::apply_gravity(phy_obj *obj)
 
 void phy_engine::insertAtTail(phy_obj *value)
 {
-    LinkedList<phy_obj *>::insertAtTail(value);
+    linked_list<phy_obj *>::insertAtTail(value);
     total_obj++;
 }
 
