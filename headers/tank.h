@@ -1,15 +1,25 @@
 #pragma once
 #include "phy_obj.h"
 #include "raylib.h"
+#include "phy_engine.h"
+
 
 class tank : public phy_obj
 {
     Texture2D tank_texture{};
-    Rectangle texture_rec{}; 
+    
+    void draw_aimline();
+    
 
 public:
+    float shoot_angle = 0.0f;
+    Vector2 shoot_position{};
+
+    void shoot_missile(phy_engine* engine,Vector2 power);
+
     tank(Vector2 position, float radius, const char *tank_texture);
     ~tank();
     void draw();
     void draw_debug();
+    
 };

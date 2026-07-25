@@ -36,6 +36,7 @@ public:
             Vector2 velocity, Vector2 acceleration);
     phy_obj(Vector2 position, float radius);
     phy_obj(Vector2 position, float radius, int bounce_before_death);
+    phy_obj(Vector2 position, Vector2 velocity ,float radius, int bounce_before_death);
     phy_obj(Vector2 position, float radius, float friction, int bounce_before_death);
 
     virtual void draw() = 0;

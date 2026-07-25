@@ -1,11 +1,11 @@
 TODO: perlin noise https://youtu.be/EHlaJvQpW3U?t=404
 TODO: map camera scroll? https://youtu.be/EHlaJvQpW3U?t=655
 
-private static var of pair of floats in dummy? https://youtu.be/EHlaJvQpW3U?t=856
-
-TODO: changes happening to phy obj get applied to the child immediately
+TODO: private static var of pair of floats in dummy? https://youtu.be/EHlaJvQpW3U?t=856
 
 TODO: possible states of the game:
         1) input check
 
-WASD velcoity increment movement is make the character stuck
+TODO:  Tank movement WASD velcoity increment movement is make the character stuck
+
+TODO: some kind of centralized system for adding phy objects into the doubly linked list

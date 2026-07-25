@@ -23,12 +23,10 @@ int main()
         // WARNING NOTE: Textures MUST be loaded after Window initialization (OpenGL context is required)
 
         map mapp(10, SCREEN_WIDTH, SCREEN_HEIGHT, "assets\\map_input.txt");
-         //map mapp(10, SCREEN_WIDTH, SCREEN_HEIGHT);
+        // map mapp(10, SCREEN_WIDTH, SCREEN_HEIGHT);
         //  map mapp(10, SCREEN_WIDTH, SCREEN_HEIGHT, 'G');
         //    map.load_textures("assets\\ground_20.png", "assets\\sky_20.png");
         mapp.load_textures("assets\\ground.png", "assets\\sky.png");
-
-        
 
         phy_engine engine;
         std::srand(time(nullptr)); // TODO: implement C++ 11 rcandom
@@ -40,8 +38,11 @@ int main()
         bool map_grid_toogle = false;
         bool display_debug_toogle = false;
 
-        tank* player = nullptr;
-        
+        tank *player = nullptr;
+
+        Vector2 power{};
+        char buffer[50] = "";
+
         while (!WindowShouldClose()) // Detect window close button or ESC key
         {
 
@@ -105,7 +106,7 @@ int main()
                 created_missile = new missile(GetMousePosition(), 10, "assets\\missile1.png");
                 engine.insertAtTail(created_missile);
             }
-            
+
             if (IsKeyPressed(KEY_FOUR))
             {
                 tank *created_tank = nullptr;
@@ -114,40 +115,78 @@ int main()
                 player = created_tank;
             }
 
-            if(IsKeyDown(KEY_D)){
+            if (IsKeyDown(KEY_D))
+            {
 
-                if (player!=nullptr)
+                if (player != nullptr)
                 {
-                    player->velocity.x+=1.0f;
-                    player->velocity.y-=1.2f;
+                    player->velocity.x += 1.0f;
+                    player->velocity.y -= 1.2f;
                 }
             }
 
-            if(IsKeyDown(KEY_A)){
+            if (IsKeyDown(KEY_A))
+            {
 
-                if (player!=nullptr)
+                if (player != nullptr)
                 {
-                    player->velocity.x-=1.0f;
-                    player->velocity.y-=1.2f;
+                    player->velocity.x -= 1.0f;
+                    player->velocity.y -= 1.2f;
+                }
+            }
+
+            if (IsKeyDown(KEY_W))
+            {
+
+                if (player != nullptr)
+                {
+                    player->velocity.y -= 5.0f;
+                }
+            }
+            if (IsKeyDown(KEY_S))
+            {
+
+                if (player != nullptr)
+                {
+                    player->velocity.y += 5.0f;
+                }
+            }
+
+            if (IsKeyDown(KEY_UP))
+            {
+
+                if (player != nullptr)
+                {
+                    player->shoot_angle += 0.1f;
+                }
+            }
+            else if (IsKeyDown(KEY_DOWN))
+            {
+
+                if (player != nullptr)
+                {
+                    player->shoot_angle -= 0.1f;
                 }
             }
 
             
-
-            if(IsKeyDown(KEY_W)){
-
-                if (player!=nullptr)
-                {
-                    player->velocity.y-=5.0f;
-                }
+            if (IsKeyDown(KEY_SPACE))
+            {
+                power.x++;
+                power.y++;
+                sprintf(buffer,"power: %d", static_cast<int>(power.x));
             }
-            if(IsKeyDown(KEY_S)){
-
-                if (player!=nullptr)
-                {
-                    player->velocity.y+=5.0f;
+            if (IsKeyReleased(KEY_SPACE))
+            {
+                if (player != nullptr){
+                    player->shoot_missile(&engine,power);
                 }
+                
+                power = {0.0f,0.0f};
+                
             }
+            
+
             
 
             RADIUS += GetMouseWheelMove();
@@ -195,8 +234,6 @@ int main()
             ClearBackground(WHITE);
             mapp.draw(map_grid_toogle);
 
-            
-
             if (display_debug_toogle == false)
             {
                 engine.draw();
@@ -208,10 +245,7 @@ int main()
 
             Vector2 pos = GetMousePosition();
             DrawCircleLinesV(pos, RADIUS, GREEN);
-
-           
-           
-           
+            DrawText(buffer,0,0,20,BLACK);
             // Node<phy_obj *> *tmp = engine.head;
             // Vector2 dist_vec{};
             // float dist = 0.0f;
@@ -259,3 +293,4 @@ int main()
     //  system("pause");
     return 0;
 }
+

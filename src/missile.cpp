@@ -5,6 +5,11 @@ missile::missile(Vector2 position, float radius, const char *missile_texture) : 
     this->missile_texture = LoadTexture(missile_texture);
 }
 
+missile::missile(Vector2 position, Vector2 velocity, float radius, const char *missile_texture) : phy_obj(position, velocity, radius, 1)
+{
+    this->missile_texture = LoadTexture(missile_texture);
+}
+
 void missile::draw()
 {
     float angle = atan2f(velocity.y, velocity.x);
