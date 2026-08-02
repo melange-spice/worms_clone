@@ -17,7 +17,7 @@ void map::make_circle(Vector2 position, int radius, char replace)
                 map_x = (x + position.x) / 10;
                 map_y = (y + position.y) / 10;
 
-                change_grid({map_x,map_y},replace);
+                change_grid({map_x, map_y}, replace);
             }
         }
     }
@@ -53,27 +53,7 @@ map::map(int tile_width, int width, int height) : tile_width{tile_width}, map_wi
 // assuming coordinate is already in map coordinate format and not in pixel coordinates
 void map::change_grid(Vector2 coordinate, char value)
 {
-    // check for out of bound
-    //  x coordinate check
-    if (coordinate.x < 0)
-    {
-        coordinate.x = 0;
-    }
-    else if (coordinate.x >= map_width)
-    {
-        coordinate.x = map_width - 1; // 0 based indexing in map_grid
-    }
-
-    // y coordinate check
-    if (coordinate.y < 0)
-    {
-        coordinate.y = 0;
-    }
-    else if (coordinate.y >= map_height)
-    {
-        coordinate.y = map_height - 1; // 0 based indexing in map_grid
-    }
-
+    clamp(coordinate);
     map_grid[int(coordinate.y)][int(coordinate.x)] = value;
 }
 
@@ -181,4 +161,41 @@ map::~map()
         delete[] map_grid[i];
     }
     delete[] map_grid;
+}
+
+int map::get_tile_width()
+{
+    return tile_width;
+}
+
+// return the map character present at the given coordinate
+// return 0 if coordinate out of bound
+char map::access_grid(Vector2 coordinate)
+{
+    clamp(coordinate);
+    return map_grid[int(coordinate.y)][int(coordinate.x)];
+}
+
+// clamp the coordinate within the dimensions of the map, i.e., map_width, map_height
+void map::clamp(Vector2 &coordinate)
+{
+    //  x coordinate check
+    if (coordinate.x < 0)
+    {
+        coordinate.x = 0;
+    }
+    else if (coordinate.x >= map_width)
+    {
+        coordinate.x = map_width - 1; // 0 based indexing in map_grid
+    }
+
+    // y coordinate check
+    if (coordinate.y < 0)
+    {
+        coordinate.y = 0;
+    }
+    else if (coordinate.y >= map_height)
+    {
+        coordinate.y = map_height - 1; // 0 based indexing in map_grid
+    }
 }

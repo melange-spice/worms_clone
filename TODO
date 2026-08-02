@@ -9,3 +9,10 @@ TODO: possible states of the game:
 TODO:  Tank movement WASD velcoity increment movement is make the character stuck
 
 TODO: some kind of centralized system for adding phy objects into the doubly linked list
+
+TODO: camera follows an object. Camera tracking the missile is kind mehhh
+
+TODO: camera panning thing https://youtu.be/pV2qYJjCdxM?t=913 camera can only pan around the local field of view
+
+
+TODO: energizing ui

@@ -277,7 +277,7 @@ bool phy_engine::check_map_collision(phy_obj *obj, Vector2 potential_position, V
     response.y = 0;
 
     bool collision_occured = false;
-    float lim = angle_step(obj->radius, mapp->tile_width); // TODO: angle_step should be a constructor call
+    float lim = angle_step(obj->radius, mapp->get_tile_width()); // TODO: angle_step should be a constructor call
 
     // for every point on the semi-circle separated by the lim angle
     // check for collision on the point via mapp_grid
@@ -325,10 +325,10 @@ bool phy_engine::check_map_collision(phy_obj *obj, Vector2 potential_position, V
             map_y = 59;
             clamp = true;
         }
-
+        
         // TODO: does clamp condition even make sense
         //  if there is something other than 'S' in the map then yes collision has occured
-        if (mapp->map_grid[map_y][map_x] != 'S' && clamp == false)
+        if (mapp->access_grid({float(map_x),float(map_y)}) != 'S' && clamp == false)
         {
             // translate again before addition to center around (0,0)
             // hence response vector would be centered about (0,0)

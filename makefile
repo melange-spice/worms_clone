@@ -1,6 +1,6 @@
-main.exe: build/debris.o build/dummy.o build/map.o build/missile.o build/phy_engine.o build/phy_obj.o build/tank.o build/main.o build/linked_list.o
+main.exe: build/input_handler.o build/game.o build/debris.o build/dummy.o build/map.o build/missile.o build/phy_engine.o build/phy_obj.o build/tank.o build/main.o build/linked_list.o
 	@printf "Linking: %-22s ===================> %s\n" "*.o files" "main.exe"
-	@g++ -fdiagnostics-color=always -g build/main.o  build/debris.o  build/dummy.o  build/map.o  build/missile.o  build/phy_engine.o  build/phy_obj.o  build/tank.o -o main.exe -L"libraries" -lraylib -lgdi32 -lwinmm
+	@g++ -fdiagnostics-color=always -g build/main.o  build/game.o build/input_handler.o build/debris.o  build/dummy.o  build/map.o  build/missile.o  build/phy_engine.o  build/phy_obj.o  build/tank.o -o main.exe -L"libraries" -lraylib -lgdi32 -lwinmm
 
 
 build/tank.o: src/tank.cpp headers/tank.h
@@ -45,3 +45,11 @@ build/main.o: src/main.cpp
 build/linked_list.o: headers/linked_list.h
 	@printf "Compiling: %-20s ===================> %s\n" "linked_list.h" "linked_list.o"
 	@g++ -fdiagnostics-color=always -g -c "headers/linked_list.h" -o "build/linked_list.o" -iquote "headers"
+
+build/game.o: src/game.cpp headers/game.h
+	@printf "Compiling: %-20s ===================> %s\n" "game.cpp" "game.o"
+	@g++ -fdiagnostics-color=always -g -c "src/game.cpp" -o "build/game.o" -iquote "headers"
+
+build/input_handler.o: src/input_handler.cpp headers/input_handler.h
+	@printf "Compiling: %-20s ===================> %s\n" "input_handler.cpp" "input_handler.o"
+	@g++ -fdiagnostics-color=always -g -c "src/input_handler.cpp" -o "build/input_handler.o" -iquote "headers"	
