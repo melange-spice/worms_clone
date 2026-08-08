@@ -3,53 +3,53 @@ main.exe: build/input_handler.o build/game.o build/debris.o build/dummy.o build/
 	@g++ -fdiagnostics-color=always -g build/main.o  build/game.o build/input_handler.o build/debris.o  build/dummy.o  build/map.o  build/missile.o  build/phy_engine.o  build/phy_obj.o  build/tank.o -o main.exe -L"libraries" -lraylib -lgdi32 -lwinmm
 
 
-build/tank.o: src/tank.cpp headers/tank.h
+build/tank.o: src/tank.cpp include/tank.h
 	@printf "Compiling: %-20s ===================> %s\n" "tank.cpp" "tank.o"
-	@g++ -fdiagnostics-color=always -g -c "src/tank.cpp" -o "build/tank.o" -iquote "headers"
+	@g++ -fdiagnostics-color=always -g -c "src/tank.cpp" -o "build/tank.o" -iquote "include"
 
 
-build/phy_obj.o: src/phy_obj.cpp headers/phy_obj.h
+build/phy_obj.o: src/phy_obj.cpp include/phy_obj.h
 	@printf "Compiling: %-20s ===================> %s\n" "phy_obj.cpp" "phy_obj.o"
-	@g++ -fdiagnostics-color=always -g -c "src/phy_obj.cpp" -o "build/phy_obj.o" -iquote "headers"
+	@g++ -fdiagnostics-color=always -g -c "src/phy_obj.cpp" -o "build/phy_obj.o" -iquote "include"
 
 
-build/phy_engine.o: src/phy_engine.cpp headers/phy_engine.h
+build/phy_engine.o: src/phy_engine.cpp include/phy_engine.h
 	@printf "Compiling: %-20s ===================> %s\n" "phy_engine.cpp" "phy_engine.o"
-	@g++ -fdiagnostics-color=always -g -c "src/phy_engine.cpp" -o "build/phy_engine.o" -iquote "headers"
+	@g++ -fdiagnostics-color=always -g -c "src/phy_engine.cpp" -o "build/phy_engine.o" -iquote "include"
 
 
-build/missile.o: src/missile.cpp headers/missile.h
+build/missile.o: src/missile.cpp include/missile.h
 	@printf "Compiling: %-20s ===================> %s\n" "missile.cpp" "missile.o"
-	@g++ -fdiagnostics-color=always -g -c "src/missile.cpp" -o "build/missile.o" -iquote "headers"
+	@g++ -fdiagnostics-color=always -g -c "src/missile.cpp" -o "build/missile.o" -iquote "include"
 
 
-build/map.o: src/map.cpp headers/map.h
+build/map.o: src/map.cpp include/map.h
 	@printf "Compiling: %-20s ===================> %s\n" "map.cpp" "map.o"
-	@g++ -fdiagnostics-color=always -g -c "src/map.cpp" -o "build/map.o" -iquote "headers"
+	@g++ -fdiagnostics-color=always -g -c "src/map.cpp" -o "build/map.o" -iquote "include"
 
 
-build/dummy.o: src/dummy.cpp headers/dummy.h
+build/dummy.o: src/dummy.cpp include/dummy.h
 	@printf "Compiling: %-20s ===================> %s\n" "dummy.cpp" "dummy.o"
-	@g++ -fdiagnostics-color=always -g -c "src/dummy.cpp" -o "build/dummy.o" -iquote "headers"
+	@g++ -fdiagnostics-color=always -g -c "src/dummy.cpp" -o "build/dummy.o" -iquote "include"
 
 
-build/debris.o: src/debris.cpp headers/debris.h
+build/debris.o: src/debris.cpp include/debris.h
 	@printf "Compiling: %-20s ===================> %s\n" "debris.cpp" "debris.o"
-	@g++ -fdiagnostics-color=always -g -c "src/debris.cpp" -o "build/debris.o" -iquote "headers"
+	@g++ -fdiagnostics-color=always -g -c "src/debris.cpp" -o "build/debris.o" -iquote "include"
 
 
 build/main.o: src/main.cpp
 	@printf "Compiling: %-20s ===================> %s\n" "main.cpp" "main.o"
-	@g++ -fdiagnostics-color=always -g -c "src/main.cpp" -o "build/main.o" -iquote "headers"
+	@g++ -fdiagnostics-color=always -g -c "src/main.cpp" -o "build/main.o" -iquote "include"
 
-build/linked_list.o: headers/linked_list.h
+build/linked_list.o: include/linked_list.h
 	@printf "Compiling: %-20s ===================> %s\n" "linked_list.h" "linked_list.o"
-	@g++ -fdiagnostics-color=always -g -c "headers/linked_list.h" -o "build/linked_list.o" -iquote "headers"
+	@g++ -fdiagnostics-color=always -g -c "include/linked_list.h" -o "build/linked_list.o" -iquote "include"
 
-build/game.o: src/game.cpp headers/game.h
+build/game.o: src/game.cpp include/game.h
 	@printf "Compiling: %-20s ===================> %s\n" "game.cpp" "game.o"
-	@g++ -fdiagnostics-color=always -g -c "src/game.cpp" -o "build/game.o" -iquote "headers"
+	@g++ -fdiagnostics-color=always -g -c "src/game.cpp" -o "build/game.o" -iquote "include"
 
-build/input_handler.o: src/input_handler.cpp headers/input_handler.h
+build/input_handler.o: src/input_handler.cpp include/input_handler.h
 	@printf "Compiling: %-20s ===================> %s\n" "input_handler.cpp" "input_handler.o"
-	@g++ -fdiagnostics-color=always -g -c "src/input_handler.cpp" -o "build/input_handler.o" -iquote "headers"	
+	@g++ -fdiagnostics-color=always -g -c "src/input_handler.cpp" -o "build/input_handler.o" -iquote "include"	
