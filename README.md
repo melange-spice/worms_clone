@@ -3,4 +3,4 @@ Implementation of this [worms game series](https://www.youtube.com/watch?v=EHlaJ
 
 Progress so far:
 
-![alt text](demo.gif)
+![alt text](assets/demo.gif)
