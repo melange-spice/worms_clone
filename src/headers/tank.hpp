@@ -17,7 +17,7 @@ public:
 
     tank(Vector2 position, float radius, const char *tank_texture);
     ~tank();
-    void draw();
-    void draw_debug();
+    void draw() override;
+    void draw_debug() override;
     
 };

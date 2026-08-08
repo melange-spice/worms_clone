@@ -10,6 +10,6 @@ public:
     missile(Vector2 position,Vector2 velocity, float radius, const char *missile_texture);
 
     ~missile();
-    void draw();
-    void draw_debug();
+    void draw() override;
+    void draw_debug() override;
 };

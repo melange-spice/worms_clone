@@ -12,8 +12,8 @@ class debris : public phy_obj
 public:
     debris(Vector2 position, float radius);
 
-    void draw();
-    void draw_debug();
+    void draw() override;
+    void draw_debug() override;
 
     ~debris();
 };
