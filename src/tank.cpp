@@ -1,5 +1,5 @@
-#include "tank.hpp"
-#include "missile.hpp"
+#include "headers/tank.hpp"
+#include "headers/missile.hpp"
 #include <cmath>
 
 tank::tank(Vector2 position, float radius, const char *tank_texture) : phy_obj(position, radius, 0.3, -1)

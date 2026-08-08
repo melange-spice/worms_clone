@@ -1,4 +1,4 @@
-#include "map.hpp"
+#include "headers/map.hpp"
 #include <fstream>
 
 void map::make_circle(Vector2 position, int radius, char replace)

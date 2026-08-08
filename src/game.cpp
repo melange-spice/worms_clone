@@ -1,5 +1,5 @@
-#include "game.hpp"
-#include "input_handler.hpp"
+#include "headers/game.hpp"
+#include "headers/input_handler.hpp"
 
 game::game(int screen_width, int screen_height, const char *window_title) : mapp(10, screen_width, screen_height, "assets/map_input.txt")
 {

@@ -1,4 +1,4 @@
-#include "dummy.hpp"
+#include "headers/dummy.hpp"
 
 dummy::dummy(Vector2 position, float radius) : phy_obj(position, radius)
 {    

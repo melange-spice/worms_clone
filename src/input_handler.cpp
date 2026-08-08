@@ -1,7 +1,7 @@
-#include "input_handler.hpp"
-#include "dummy.hpp"
-#include "debris.hpp"
-#include "missile.hpp"
+#include "headers/input_handler.hpp"
+#include "headers/dummy.hpp"
+#include "headers/debris.hpp"
+#include "headers/missile.hpp"
 
 void input_handler::handle_input(game *gamee)
 {

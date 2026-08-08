@@ -40,7 +40,7 @@ build/debris.o: src/debris.cpp include/debris.hpp
 
 build/main.o: src/main.cpp
 	@printf "Compiling: %-20s ===================> %s\n" "main.cpp" "main.o"
-	@g++ -fdiagnostics-color=always -g -c "src/main.cpp" -o "build/main.o" -iquote "include"
+	@g++ -fdiagnostics-color=always -g -c "src/main.cpp" -o "build/main.o" -I "include"
 
 build/linked_list.o: include/linked_list.hpp
 	@printf "Compiling: %-20s ===================> %s\n" "linked_list.hpp" "linked_list.o"
