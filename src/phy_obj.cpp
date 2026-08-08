@@ -1,4 +1,5 @@
-#include "phy_obj.h"
+#include "phy_obj.hpp"
+#include <cstdio>
 
 // every physics object would have a circle that is used for physics calculations
 // call this function to draw that circle along with the velocity vector

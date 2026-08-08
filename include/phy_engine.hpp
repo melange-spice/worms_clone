@@ -1,10 +1,7 @@
 #pragma once
-#include "linked_list.h"
-#include "phy_obj.h"
-#include <cmath>
-#include "map.h"
-#include "raylib.h"
-#include <vector>
+#include "linked_list.hpp"
+#include "phy_obj.hpp"
+#include "map.hpp"
 
 // phy_engine is responsible for applying physics on all the phy_obj in the game
 class phy_engine : public linked_list<phy_obj *>

@@ -1,4 +1,6 @@
-#include "debris.h"
+#include "debris.hpp"
+#include <cmath>
+#include <random>
 
 // assign random velocity components to a debris object
 void debris::random_velocity()

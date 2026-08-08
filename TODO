@@ -16,3 +16,10 @@ TODO: camera panning thing https://youtu.be/pV2qYJjCdxM?t=913 camera can only pa
 
 
 TODO: energizing ui
+
+
+TODO: 
+Your library usage should look rather different. You usually dont ship library headers and artifacts. You should prefer a package/dependency manager for this. Most common here would be conan or vcpkg.
+
+TODO: 
+ I would recommend using CMake over plain makefiles. 

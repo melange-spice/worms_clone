@@ -1,6 +1,6 @@
-#include "phy_engine.h"
-#include "debris.h"
-
+#include "phy_engine.hpp"
+#include "debris.hpp"
+#include <cmath>
 
 void phy_engine::apply_shockwave(Vector2 explosion_pos, int radius)
 {

@@ -1,4 +1,5 @@
-#include "missile.h"
+#include "missile.hpp"
+#include <cmath>
 
 missile::missile(Vector2 position, float radius, const char *missile_texture) : phy_obj(position, radius, 1)
 {

@@ -1,9 +1,7 @@
 #pragma once
-#include "raylib.h"
-#include "map.h"
-#include "phy_engine.h"
-#include "tank.h"
-#include "input_handler.h"
+#include "phy_engine.hpp"
+#include "tank.hpp"
+
 
 class game
 {
@@ -39,7 +37,7 @@ public:
     // game initialization
     game(int screen_width, int screen_height, const char *window_title);
 
-    void game_loop(game* gamee);
+    void game_loop();
 
     ~game();
 };

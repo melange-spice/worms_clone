@@ -1,5 +1,6 @@
-#include "tank.h"
-#include "missile.h"
+#include "tank.hpp"
+#include "missile.hpp"
+#include <cmath>
 
 tank::tank(Vector2 position, float radius, const char *tank_texture) : phy_obj(position, radius, 0.3, -1)
 {
@@ -78,7 +79,7 @@ void tank::shoot_missile(phy_engine *engine, Vector2 power)
                                 sinf(-1 * shoot_angle)*power.y};
 
 
-    created_missile = new missile(shoot_position, velocity_missile, 10, "assets\\missile1.png");
+    created_missile = new missile(shoot_position, velocity_missile, 10, "assets/missile1.png");
 
     engine->insertAtTail(created_missile);
 }

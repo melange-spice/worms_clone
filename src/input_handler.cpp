@@ -1,4 +1,7 @@
-#include "input_handler.h"
+#include "input_handler.hpp"
+#include "dummy.hpp"
+#include "debris.hpp"
+#include "missile.hpp"
 
 void input_handler::handle_input(game *gamee)
 {
@@ -11,9 +14,9 @@ void input_handler::handle_input(game *gamee)
 
     create_dummy(&gamee->engine);
     create_debris(&gamee->engine, 20);
-    create_missile(&gamee->engine, "assets\\missile1.png");
+    create_missile(&gamee->engine, "assets/missile1.png");
 
-    tank* player = create_tank(&gamee->engine, "assets\\tankred.png");
+    tank* player = create_tank(&gamee->engine, "assets/tankred.png");
     
     if (player!=nullptr )
     {

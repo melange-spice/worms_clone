@@ -1,7 +1,5 @@
 #pragma once
-#include "phy_obj.h"
-#include "raylib.h"
-#include <cmath>
+#include "phy_obj.hpp"
 
 class dummy : public phy_obj
 {

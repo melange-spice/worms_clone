@@ -1,6 +1,5 @@
 #pragma once
-#include "phy_obj.h"
-#include "raylib.h"
+#include "phy_obj.hpp"
 
 class missile : public phy_obj
 {

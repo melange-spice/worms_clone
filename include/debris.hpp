@@ -1,8 +1,5 @@
 #pragma once
-#include "phy_obj.h"
-#include "raylib.h"
-#include <cmath>
-#include <random>
+#include "phy_obj.hpp"
 
 class debris : public phy_obj
 {

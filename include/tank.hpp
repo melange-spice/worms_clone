@@ -1,7 +1,5 @@
 #pragma once
-#include "phy_obj.h"
-#include "raylib.h"
-#include "phy_engine.h"
+#include "phy_engine.hpp"
 
 
 class tank : public phy_obj

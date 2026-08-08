@@ -1,15 +1,7 @@
 class game;   // forward declartion so compiler can stop bitching
 
 #pragma once
-#include "map.h"
-#include "phy_engine.h"
-#include "dummy.h"
-#include "debris.h"
-#include "missile.h"
-#include "tank.h"
-#include <iostream>
-#include "game.h"
-
+#include "game.hpp"
 
 
 class input_handler
